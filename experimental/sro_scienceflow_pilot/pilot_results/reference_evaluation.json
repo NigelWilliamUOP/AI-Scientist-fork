@@ -1,0 +1,17 @@
+{
+  "attempted_holdout_cells": 53,
+  "authoritative": true,
+  "baseline_sha256": "d29c8484452cc98c44836385857f41c5e9d0238fc3db913e168b85b74ca77f7a",
+  "candidate_sha256": "00cf4a99082d99a11fbbf2e6b1014016dc55945dec58c33de8dc5a35b5a6192b",
+  "genuine_unresolved_rows_preserved": 36,
+  "holdout_coverage": 0.828125,
+  "holdout_remaining": 11,
+  "holdout_total": 64,
+  "locked_rows_preserved": 244,
+  "metric": {
+    "name": "verified_holdout_cells",
+    "value": 53.0
+  },
+  "valid": true,
+  "verified_holdout_cells": 53
+}

@@ -1,0 +1,16 @@
+# Prepared research data and external hidden benchmark labels
+/data/
+/.private/
+/scienceflow_overlay/tasks/opt_solver/sro-reconstruction-pilot/.private/
+
+# Runtime outputs
+/workspaces/
+/artifacts/
+/baseline_workspace/
+/reference_workspace/
+/assisted_workspace/
+
+# Python
+__pycache__/
+.pytest_cache/
+*.py[cod]
