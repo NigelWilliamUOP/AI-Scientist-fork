@@ -1,0 +1,28 @@
+{
+  "date": "2026-08-18",
+  "full_scienceflow_worker_run": false,
+  "overlay_install_smoke_test": {
+    "passed": true,
+    "private_or_cache_files_copied": false
+  },
+  "pilot_unit_tests": {
+    "passed": 11,
+    "python": "3.13.5",
+    "pytest": "9.0.2"
+  },
+  "source_pack_regression_tests": {
+    "passed": 10
+  },
+  "syntax_and_yaml_checks": {
+    "passed": true,
+    "targets": [
+      ".github/workflows/sro-scienceflow-pilot.yml",
+      "scripts/install_overlay.py",
+      "scripts/prepare_pilot.py",
+      "scripts/evaluate_prepared.py",
+      "scienceflow_overlay/scienceflow/config/examples/tasks_sro_reconstruction_pilot.yaml",
+      "scienceflow_overlay/tasks/opt_solver/sro-reconstruction-pilot/evaluator.py",
+      "scienceflow_overlay/tasks/opt_solver/sro-reconstruction-pilot/task.yaml"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+id: sro-reconstruction-pilot
+category: opt_solver
+profile: opt_solver
+description: description_lite.md
+artifact:
+  path: artifacts/result_manifest.json
+  kind: json_solution
+metric:
+  name: verified_holdout_cells
+  lower_is_better: false
+  type: benchmark
+  authoritative: true
+evaluator:
+  entrypoint: evaluator.py:evaluate
+  timeout_sec: 120
+  visible_to_agent: false
