@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "implementation": "executable_first_version",
+  "default_provider": "deterministic-baseline-v1",
+  "default_remote_budget_usd": 0,
+  "independent_journal_readiness": "external_evaluation_only",
+  "agents": [
+    {
+      "agent_id": "study_producer",
+      "class": "research_campaigns.agents.StudyProducer",
+      "command": "study",
+      "unit_of_work": "bounded_study",
+      "implemented_methods": ["describe", "ols"],
+      "worker_tasks": ["study_plan", "study_write", "study_critic"],
+      "terminal_statuses": ["review_candidate", "abstained", "blocked_data", "stopped_budget"],
+      "denied_actions": ["arbitrary_code_execution", "hidden_file_read", "rewrite_frozen_design", "self_award_journal_readiness", "public_release"]
+    },
+    {
+      "agent_id": "programme_steward",
+      "class": "research_campaigns.agents.ProgrammeSteward",
+      "commands": ["programme-init", "programme-update", "programme-amend"],
+      "unit_of_work": "time_indexed_programme",
+      "worker_tasks": ["programme_review"],
+      "core": "deterministic_vintage_and_prediction_handler",
+      "denied_actions": ["overwrite_baseline", "rewrite_predictions", "retroactive_registration", "interpolate_outcomes", "self_confirm_mechanism", "public_release"]
+    },
+    {
+      "agent_id": "opportunity_scout",
+      "class": "research_campaigns.agents.OpportunityScout",
+      "commands": ["scout", "replay"],
+      "unit_of_work": "claim_linked_secondary_data_opportunity",
+      "worker_tasks": ["scout"],
+      "default_queue_limit": 5,
+      "replay": "strict_source_and_portfolio_vintages_isolated_cutoff_state_shared_budget",
+      "denied_actions": ["read_future_snapshot", "read_future_portfolio_version", "execute_handover", "spend_pilot_budget", "change_accepted_claims", "public_release"]
+    }
+  ],
+  "limitations": [
+    "No real provider or source-fetch integration was executed during the offline build.",
+    "A source cutoff does not erase model training-data hindsight.",
+    "Archive provenance is asserted in the manifest, not independently authenticated.",
+    "Current tests are synthetic workflow tests, not scientific validation.",
+    "Actual Missouri and CEMENT packages still require audited adapters and regression."
+  ]
+}
