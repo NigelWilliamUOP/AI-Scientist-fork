@@ -1,0 +1,24 @@
+{
+  "base_commit": "86feb9d7900f7b10f4d4b6d145a05bd994dd2156",
+  "coarse_comparison": "not_executed",
+  "compileall": "passed",
+  "external_api_spend_usd": 0,
+  "independent_scientific_validation": "not_performed",
+  "legacy_51_test_suite": "not_rerun",
+  "live_model_calls": 0,
+  "new_test_seconds": 2.775,
+  "new_tests": 75,
+  "new_tests_status": "passed",
+  "parent_core_git_blob": "134c691c999ace083259228be127eaabf49a71d0",
+  "python": "3.13.5",
+  "source_sha256": {
+    "ASSURANCE_README.md": "e3a66257db9354dde620a21732e89e8e203c9727944704ac6650c197b6d49842",
+    "assurance.py": "a2536fb3c6180d56387a0b1c14591b813564a97052aa2b1d0a2eb9a1f84fc5e1",
+    "assurance_cli.py": "5b1568dc1fe30c85984889f33fce41afd7cb411cc15a3c6e8f409ac6b5582346",
+    "assurance_demo.py": "7d8417e762361e34dce0642aa140c47aadaf1d3bfabdb6e0d72493abe8de3726",
+    "assurance_eval.py": "2350adada38fbaf5873a58397b1e856229e4183479b44625379818db598f81f7",
+    "tests/test_assurance.py": "9446177ef865c262ec8d57a945d08d31a1a19d2eff90b1b616f8f030523b2e5e"
+  },
+  "test_log_sha256": "d4dd84eca10c53dfd6d57dfbf5fe9e0d5c43918de9c05c74329f659daa0406b1",
+  "version": "assurance-0.1"
+}
