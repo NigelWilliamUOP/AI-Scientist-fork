@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Bayesian OSINT feed connection candidates, 25 September 2026</title>
+    <ownerName>Bayesian OSINT demonstration</ownerName>
+  </head>
+  <body>
+    <outline text="Validation notice" description="These are connection-test candidates, not operationally verified connections. RSS/Atom or XML content types were observed using web retrieval. No raw live feed was parsed in the build runtime because DNS resolution failed. No commercial reuse clearance is implied. No recurring schedule has been created." />
+    <outline text="Regional research">
+      <outline type="rss" text="GNET research publications" xmlUrl="https://gnet-research.org/feed/" htmlUrl="https://gnet-research.org/" />
+      <outline type="rss" text="HumAngle reporting, check bare-host redirect" xmlUrl="https://humanglemedia.com/feed/" htmlUrl="https://www.humanglemedia.com/" />
+      <outline type="rss" text="BBC Africa" xmlUrl="https://feeds.bbci.co.uk/news/world/africa/rss.xml" htmlUrl="https://www.bbc.co.uk/news/world/africa" />
+      <outline type="rss" text="WHO Africa news" xmlUrl="https://www.afro.who.int/rss/featured-news.xml" htmlUrl="https://www.afro.who.int/rss-feeds" />
+    </outline>
+    <outline text="UK institutions">
+      <outline type="rss" text="Ministry of Defence publications" xmlUrl="https://www.gov.uk/government/organisations/ministry-of-defence.atom" htmlUrl="https://www.gov.uk/government/organisations/ministry-of-defence" />
+      <outline type="rss" text="UKRI news" xmlUrl="https://www.ukri.org/news/feed/" htmlUrl="https://www.ukri.org/news/" />
+      <outline type="rss" text="NCSC guidance" xmlUrl="https://www.ncsc.gov.uk/api/1/services/v1/guidance-rss-feed.xml" htmlUrl="https://www.ncsc.gov.uk/information/rss-feeds" />
+      <outline type="rss" text="NCSC news" xmlUrl="https://www.ncsc.gov.uk/api/1/services/v1/news-rss-feed.xml" htmlUrl="https://www.ncsc.gov.uk/information/rss-feeds" />
+    </outline>
+    <outline text="Optional context, may overlap WHO news">
+      <outline type="rss" text="WHO Africa emergencies" xmlUrl="https://www.afro.who.int/rss/emergencies.xml" htmlUrl="https://www.afro.who.int/rss-feeds" />
+    </outline>
+  </body>
+</opml>
