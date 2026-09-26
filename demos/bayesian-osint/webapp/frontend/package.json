@@ -1,0 +1,1 @@
+{"name":"osint-bayes-ui","version":"0.4.1","private":true,"type":"module","scripts":{"build":"tsc -p tsconfig.json","typecheck":"tsc -p tsconfig.json --noEmit"},"devDependencies":{"typescript":"5.8.3"}}

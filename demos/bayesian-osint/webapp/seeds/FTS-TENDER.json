@@ -1,0 +1,45 @@
+{
+  "id": "FTS-TENDER",
+  "display_title": "Operations procurement: tender publication",
+  "publisher": "Find a Tender / Portsmouth City Council",
+  "url": "https://www.find-tender.service.gov.uk/Notice/031986-2024",
+  "source_type": "contract_notice",
+  "origin_group": "PCC-OPERATIONS-047c84",
+  "notice_id": "2024/S 000-031986",
+  "ocid": "ocds-h6vhtk-047c84",
+  "publisher_date": "2024-10-05",
+  "publisher_timestamp": "2024-10-05T15:21:00Z",
+  "date_precision": "minute",
+  "licence": "OGL-3.0-exceptions-apply",
+  "live_capture_policy": "government_full_content",
+  "segments": [
+    {
+      "id": "planned-live",
+      "locator": "II.1.4 Short description: operating target",
+      "text": "The system is targeted to enter operation on 1st April 2025",
+      "sha256": "5e5c851efe85ca367b581c2a1e6bf176bc43dad67d8f03cb7f62e31404542b04"
+    },
+    {
+      "id": "site",
+      "locator": "II.2.3 Main site or place of performance",
+      "text": "Portsmouth International Port\nGeorge Byng Way\nPortsmouth\nPO2 8SP",
+      "sha256": "988cf505078a38864a04e1b15a9c29a860cfb2fc3efd2d70ef2ed490272c778b"
+    },
+    {
+      "id": "published-return",
+      "locator": "II.1.4 Procurement timetable > tender return",
+      "text": "4th November 2024 14:00",
+      "sha256": "ef4db1430862aca38bc64fba771b1b29f183f1ff0feec1cbdab8699235eae2ba"
+    }
+  ],
+  "version_id": "FTS-TENDER-seed-extract-v1",
+  "representation": "curated_web_extract",
+  "reviewed_on": "2026-09-26",
+  "review_method": "Manually transcribed bounded passages from public web-tool reading; not original HTTP bytes",
+  "upstream_http_status": null,
+  "upstream_body_sha256": null,
+  "acquired_at": null,
+  "publication_timezone": "Europe/London",
+  "coverage": "selected passages only",
+  "schema_version": "0.4"
+}

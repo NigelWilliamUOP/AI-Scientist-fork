@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.4",
+  "case_id": "SEA-CHANGE",
+  "sources": [
+    {
+      "id": "CF-AWARD",
+      "url": "https://www.contractsfinder.service.gov.uk/Notice/03d01a57-8f48-47fc-8e03-1dbe9af7db99",
+      "display_title": "Equipment integration: award record",
+      "capture_policy": "government_full_content",
+      "max_bytes": 3000000,
+      "timeout_seconds": 20,
+      "follow_redirects": false,
+      "enabled_for_live_fetch": true,
+      "origin_group": "PCC-EQUIPMENT-P00004896",
+      "licence": "OGL-3.0-exceptions-apply"
+    },
+    {
+      "id": "FTS-PIN",
+      "url": "https://www.find-tender.service.gov.uk/Notice/021197-2024",
+      "display_title": "Operations procurement: prior information",
+      "capture_policy": "government_full_content",
+      "max_bytes": 3000000,
+      "timeout_seconds": 20,
+      "follow_redirects": false,
+      "enabled_for_live_fetch": true,
+      "origin_group": "PCC-OPERATIONS-047c84",
+      "licence": "OGL-3.0-exceptions-apply"
+    },
+    {
+      "id": "FTS-TENDER",
+      "url": "https://www.find-tender.service.gov.uk/Notice/031986-2024",
+      "display_title": "Operations procurement: tender publication",
+      "capture_policy": "government_full_content",
+      "max_bytes": 3000000,
+      "timeout_seconds": 20,
+      "follow_redirects": false,
+      "enabled_for_live_fetch": true,
+      "origin_group": "PCC-OPERATIONS-047c84",
+      "licence": "OGL-3.0-exceptions-apply"
+    },
+    {
+      "id": "FTS-CORRECTION",
+      "url": "https://www.find-tender.service.gov.uk/Notice/031987-2024",
+      "display_title": "Operations procurement: title correction",
+      "capture_policy": "government_full_content",
+      "max_bytes": 3000000,
+      "timeout_seconds": 20,
+      "follow_redirects": false,
+      "enabled_for_live_fetch": true,
+      "origin_group": "PCC-OPERATIONS-047c84",
+      "licence": "OGL-3.0-exceptions-apply"
+    },
+    {
+      "id": "PORT-STATEMENT",
+      "url": "https://portsmouth-port.co.uk/news/its-electrifying-portsmouth-international-ports-shore-power-system-goes-live/",
+      "display_title": "Port statement: reported use and a further capability",
+      "capture_policy": "curated_excerpt_only",
+      "max_bytes": 3000000,
+      "timeout_seconds": 20,
+      "follow_redirects": false,
+      "enabled_for_live_fetch": false,
+      "origin_group": "PORT-PCC-REPORTED-MILESTONE",
+      "licence": "copyright-publisher-short-extract-only"
+    }
+  ]
+}

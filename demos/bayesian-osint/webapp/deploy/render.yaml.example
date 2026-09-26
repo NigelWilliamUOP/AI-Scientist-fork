@@ -1,0 +1,46 @@
+# Example only. Owner approval is required before provisioning a paid service.
+# Set the Blueprint path to this file after reviewing current Render pricing.
+services:
+  - type: web
+    name: osint-bayes-heif
+    runtime: docker
+    repo: https://github.com/NigelWilliamUOP/AI-Scientist-fork
+    branch: agent/heif-visual-osint-web-v0-4
+    rootDir: demos/bayesian-osint/webapp
+    plan: starter
+    numInstances: 1
+    healthCheckPath: /api/v1/health
+    autoDeploy: false
+    disk:
+      name: osint-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_PUBLIC_URL
+        sync: false
+      - key: APP_OWNER_PASSWORD
+        sync: false
+      - key: APP_REVIEWER_PASSWORD
+        sync: false
+      - key: APP_DATA_DIR
+        value: /data
+      - key: APP_RELEASE
+        value: 0.4.1
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        sync: false
+      - key: OPENROUTER_PROVIDERS
+        sync: false
+      - key: ALLOW_PAID_AI
+        value: "false"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: TOKEN_ENCRYPTION_KEY
+        sync: false

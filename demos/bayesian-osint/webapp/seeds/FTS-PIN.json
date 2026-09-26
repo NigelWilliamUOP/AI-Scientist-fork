@@ -1,0 +1,51 @@
+{
+  "id": "FTS-PIN",
+  "display_title": "Operations procurement: prior information",
+  "publisher": "Find a Tender / Portsmouth City Council",
+  "url": "https://www.find-tender.service.gov.uk/Notice/021197-2024",
+  "source_type": "prior_information_notice",
+  "origin_group": "PCC-OPERATIONS-047c84",
+  "notice_id": "2024/S 000-021197",
+  "ocid": "ocds-h6vhtk-047c84",
+  "publisher_date": "2024-07-11",
+  "publisher_timestamp": "2024-07-11T08:59:00Z",
+  "date_precision": "minute",
+  "licence": "OGL-3.0-exceptions-apply",
+  "live_capture_policy": "government_full_content",
+  "segments": [
+    {
+      "id": "planned-live",
+      "locator": "II.1.4 Short description: indicative installation/commissioning programme",
+      "text": "go live on 1st April 2025.",
+      "sha256": "9221350a4572a92983b7fa3c2038726ef2c77177c3fb0850c3f2fa97d9aaa6fa"
+    },
+    {
+      "id": "planned-notice",
+      "locator": "II.3 Estimated date of publication of contract notice",
+      "text": "9 September 2024",
+      "sha256": "1389842365bbc61d47380d3816866f7f2b3d95d8746698c2b314eb8c4da60d75"
+    },
+    {
+      "id": "equipment-contractor",
+      "locator": "II.1.4 Short description: existing equipment contract",
+      "text": "The Council has already entered a contract with ABB Ltd",
+      "sha256": "bc870d5c0c369d8bd9c65cedc0df7002ebe2457bf7265befc46ae9bdd48b8a2f"
+    },
+    {
+      "id": "indicative-return",
+      "locator": "II.1.4 Indicative procurement programme > tender submission",
+      "text": "24th October 2024",
+      "sha256": "bc5d629ee67139778d505a406ff7338bd61eaa05211910028181d221139e4e79"
+    }
+  ],
+  "version_id": "FTS-PIN-seed-extract-v1",
+  "representation": "curated_web_extract",
+  "reviewed_on": "2026-09-26",
+  "review_method": "Manually transcribed bounded passages from public web-tool reading; not original HTTP bytes",
+  "upstream_http_status": null,
+  "upstream_body_sha256": null,
+  "acquired_at": null,
+  "publication_timezone": "Europe/London",
+  "coverage": "selected passages only",
+  "schema_version": "0.4"
+}

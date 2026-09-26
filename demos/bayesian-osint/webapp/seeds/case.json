@@ -1,0 +1,32 @@
+{
+  "id": "SEA-CHANGE",
+  "title": "Portsmouth shore power: a public-evidence investigation",
+  "question": "What can these public records establish about the operating milestone?",
+  "mode": "CURRENT_INVESTIGATION",
+  "default_probability": null,
+  "calibration_status": "not_calibrated",
+  "location": {
+    "name": "Portsmouth International Port",
+    "postcode": "PO2 8SP",
+    "lat": 50.811823,
+    "lon": -1.088367,
+    "source_url": "https://portsmouth-port.co.uk/at-the-port/find-us/",
+    "source_title": "Portsmouth International Port: Find us",
+    "source_quote": "the sat-nav coordinates are 50.811823, -1.088367.",
+    "precision": "Publisher-provided visitor directions pin; not the shore-power installation location",
+    "reviewed_on": "2026-09-26",
+    "representation": "curated_web_extract",
+    "historical_context": false
+  },
+  "initial_reconstruction_source_ids": [
+    "CF-AWARD",
+    "FTS-PIN",
+    "FTS-TENDER"
+  ],
+  "correction_source_id": "FTS-CORRECTION",
+  "later_current_source_id": "PORT-STATEMENT",
+  "historical_cutoffs": [
+    "2024-10-05T15:22:00Z",
+    "2024-10-05T15:26:00Z"
+  ]
+}

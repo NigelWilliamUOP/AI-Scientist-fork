@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.4.1",
+  "case_id": "SEA-CHANGE",
+  "data_status": "REAL_CURATED_EXTRACTS_NOT_ORIGINAL_HTTP_CAPTURES",
+  "reviewed_on": "2026-09-26",
+  "records": [
+    {
+      "id": "CF-AWARD",
+      "version_id": "CF-AWARD-seed-extract-v1",
+      "path": "seeds/CF-AWARD.json",
+      "sha256": "e6b1f72aebb439a0fc2d24991b109e35c78777294e52ad532890167b7ec83fc2",
+      "hash_scope": "retained_extract_record_file",
+      "retained_quote_words": 17
+    },
+    {
+      "id": "FTS-PIN",
+      "version_id": "FTS-PIN-seed-extract-v1",
+      "path": "seeds/FTS-PIN.json",
+      "sha256": "8db2d937d501db7f5bd886b92f7c224f67441bb54b4cf792febd772f31a72b2f",
+      "hash_scope": "retained_extract_record_file",
+      "retained_quote_words": 22
+    },
+    {
+      "id": "FTS-TENDER",
+      "version_id": "FTS-TENDER-seed-extract-v1",
+      "path": "seeds/FTS-TENDER.json",
+      "sha256": "c819fe91853bda9f5e201c4df78b0592ed53c3e980026276213d17a0499a3df4",
+      "hash_scope": "retained_extract_record_file",
+      "retained_quote_words": 24
+    },
+    {
+      "id": "FTS-CORRECTION",
+      "version_id": "FTS-CORRECTION-seed-extract-v1",
+      "path": "seeds/FTS-CORRECTION.json",
+      "sha256": "b8f80a87683b84d46a828caa2fd67890c7a691c5dac2e2071eb7d4ce0fd6232a",
+      "hash_scope": "retained_extract_record_file",
+      "retained_quote_words": 18
+    },
+    {
+      "id": "PORT-STATEMENT",
+      "version_id": "PORT-STATEMENT-seed-extract-v1",
+      "path": "seeds/PORT-STATEMENT.json",
+      "sha256": "2fd69e69a988a265b8b880100c1d90a6a1003a4db218797bb2529a8aae586908",
+      "hash_scope": "retained_extract_record_file",
+      "retained_quote_words": 22
+    }
+  ],
+  "source_count": 5,
+  "original_http_capture_count": 0,
+  "requires_live_government_capture_ids": [
+    "CF-AWARD",
+    "FTS-PIN",
+    "FTS-TENDER",
+    "FTS-CORRECTION"
+  ],
+  "derived_from": "User-supplied Codex v0.4 pack; registry paths migrated without altering quoted passages."
+}
