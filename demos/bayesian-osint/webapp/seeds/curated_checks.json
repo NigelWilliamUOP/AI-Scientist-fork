@@ -1,0 +1,52 @@
+{
+  "status": "AUTHOR_CURATED_TEST_EXPECTATIONS_NOT_MODEL_OUTPUT",
+  "checks": [
+    {
+      "id": "C1",
+      "sources": [
+        "CF-AWARD"
+      ],
+      "expectation": "A zero-valued structured field and a descriptive equipment range coexist. They do not establish a free contract or a confirmed final paid value."
+    },
+    {
+      "id": "C2",
+      "sources": [
+        "FTS-PIN",
+        "FTS-TENDER"
+      ],
+      "expectation": "The retained April operating date is a programme target, not completion evidence."
+    },
+    {
+      "id": "C3",
+      "sources": [
+        "FTS-TENDER",
+        "FTS-CORRECTION"
+      ],
+      "expectation": "The linked correction repairs the title; it does not change the operating target."
+    },
+    {
+      "id": "C4",
+      "sources": [
+        "PORT-STATEMENT"
+      ],
+      "expectation": "The retained passage reports use while referring to a further simultaneous-use capability expected later. Do not treat every intended capability as completed."
+    },
+    {
+      "id": "C5",
+      "sources": [
+        "FTS-PIN",
+        "FTS-TENDER",
+        "FTS-CORRECTION"
+      ],
+      "expectation": "Shared procurement origin; multiple notices are not automatically independent corroboration."
+    },
+    {
+      "id": "C6",
+      "sources": [
+        "FTS-PIN",
+        "FTS-TENDER"
+      ],
+      "expectation": "Indicative tender submission date 24 October 2024 becomes the published tender return deadline 4 November 2024. This is procurement timetable evolution, not proof of a changed physical operating milestone."
+    }
+  ]
+}

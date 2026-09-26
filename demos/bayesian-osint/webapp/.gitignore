@@ -1,0 +1,18 @@
+.env
+.env.*
+!.env.example
+.runtime/
+.venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.sqlite3*
+*.enc
+reports/*.png
+reports/*.xml
+reports/live-*.json
+reports/*capture*
+
+# Generated for the release ZIP and Docker image, not the source tree.
+frontend/public/app.js

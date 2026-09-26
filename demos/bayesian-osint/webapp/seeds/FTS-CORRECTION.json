@@ -1,0 +1,39 @@
+{
+  "id": "FTS-CORRECTION",
+  "display_title": "Operations procurement: title correction",
+  "publisher": "Find a Tender / Portsmouth City Council",
+  "url": "https://www.find-tender.service.gov.uk/Notice/031987-2024",
+  "source_type": "correction_notice",
+  "origin_group": "PCC-OPERATIONS-047c84",
+  "notice_id": "2024/S 000-031987",
+  "ocid": "ocds-h6vhtk-047c84",
+  "publisher_date": "2024-10-05",
+  "publisher_timestamp": "2024-10-05T15:25:00Z",
+  "date_precision": "minute",
+  "licence": "OGL-3.0-exceptions-apply",
+  "live_capture_policy": "government_full_content",
+  "segments": [
+    {
+      "id": "before",
+      "locator": "VII.1.2 > II.1.1 Title > Instead of",
+      "text": "Shore Power HV Operations Management - Portsmouth International Por",
+      "sha256": "bc62defa9db5014329044bdcd6202389f7b7a493ec7fe89ed6429bf9eb6e7224"
+    },
+    {
+      "id": "after",
+      "locator": "VII.1.2 > II.1.1 Title > Read",
+      "text": "Shore Power HV Operations Management - Portsmouth International Port",
+      "sha256": "db38a270197080ee48ed7a9e39fdfe2095cdacb850c6c44295be8b259e9c5478"
+    }
+  ],
+  "version_id": "FTS-CORRECTION-seed-extract-v1",
+  "representation": "curated_web_extract",
+  "reviewed_on": "2026-09-26",
+  "review_method": "Manually transcribed bounded passages from public web-tool reading; not original HTTP bytes",
+  "upstream_http_status": null,
+  "upstream_body_sha256": null,
+  "acquired_at": null,
+  "publication_timezone": "Europe/London",
+  "coverage": "selected passages only",
+  "schema_version": "0.4"
+}

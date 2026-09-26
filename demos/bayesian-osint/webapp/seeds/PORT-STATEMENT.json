@@ -1,0 +1,39 @@
+{
+  "id": "PORT-STATEMENT",
+  "display_title": "Port statement: reported use and a further capability",
+  "publisher": "Portsmouth International Port",
+  "url": "https://portsmouth-port.co.uk/news/its-electrifying-portsmouth-international-ports-shore-power-system-goes-live/",
+  "source_type": "publisher_statement",
+  "origin_group": "PORT-PCC-REPORTED-MILESTONE",
+  "notice_id": null,
+  "ocid": null,
+  "publisher_date": null,
+  "publisher_timestamp": null,
+  "date_precision": "unknown",
+  "licence": "copyright-publisher-short-extract-only",
+  "live_capture_policy": "curated_excerpt_only",
+  "segments": [
+    {
+      "id": "reported-use",
+      "locator": "Article opening paragraph: bounded extract",
+      "text": "now plugging into Portsmouth International Port’s shore power system",
+      "sha256": "bb478c1fd278416d955c3add1f574dcc5bcde155d85489b9f27ec852cb434464"
+    },
+    {
+      "id": "future-capability",
+      "locator": "Article paragraph after the cruise-ship testing paragraph: bounded extract",
+      "text": "three ships plug in simultaneously, which is expected to happen later this year.",
+      "sha256": "db1e78d67edba7cbc1c71b16f4eb9b7a55f51b42270af330add32267b632f786"
+    }
+  ],
+  "version_id": "PORT-STATEMENT-seed-extract-v1",
+  "representation": "curated_web_extract",
+  "reviewed_on": "2026-09-26",
+  "review_method": "Manually transcribed bounded passages from public web-tool reading; not original HTTP bytes",
+  "upstream_http_status": null,
+  "upstream_body_sha256": null,
+  "acquired_at": null,
+  "publication_timezone": "Europe/London",
+  "coverage": "selected passages only",
+  "schema_version": "0.4"
+}

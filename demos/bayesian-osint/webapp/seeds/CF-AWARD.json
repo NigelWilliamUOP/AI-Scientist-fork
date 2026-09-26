@@ -1,0 +1,51 @@
+{
+  "id": "CF-AWARD",
+  "display_title": "Equipment integration: award record",
+  "publisher": "Contracts Finder / Portsmouth City Council",
+  "url": "https://www.contractsfinder.service.gov.uk/Notice/03d01a57-8f48-47fc-8e03-1dbe9af7db99",
+  "source_type": "procurement_award",
+  "origin_group": "PCC-EQUIPMENT-P00004896",
+  "notice_id": "03d01a57-8f48-47fc-8e03-1dbe9af7db99",
+  "ocid": null,
+  "publisher_date": "2024-03-26",
+  "publisher_timestamp": null,
+  "date_precision": "day",
+  "licence": "OGL-3.0-exceptions-apply",
+  "live_capture_policy": "government_full_content",
+  "segments": [
+    {
+      "id": "value",
+      "locator": "Contract summary > Value of contract",
+      "text": "Value of contract\n£0",
+      "sha256": "b675f0d0c270298df6810a08e70a247bcc1aa4ddb0942e8075f61e95dc008b48"
+    },
+    {
+      "id": "range",
+      "locator": "Description > numbered contract 1",
+      "text": "Value range of £12 - £14m.",
+      "sha256": "aa290afb05dd8f077640479757c1d58e01cde3c4386ff025f1a752c5d62337c4"
+    },
+    {
+      "id": "supplier",
+      "locator": "Award information > supplier",
+      "text": "ABB Limited",
+      "sha256": "d742cd05d4663d35085fd667bb5bfa1d5949ceef9c6456e5c937abbd30c3f852"
+    },
+    {
+      "id": "completion",
+      "locator": "Description > numbered contract 1",
+      "text": "completing by 31st March 2025.",
+      "sha256": "554c9033f8eb9e4ae16308c5f7fede4bd8af0dcf01c01674ebf735bc23ca1fef"
+    }
+  ],
+  "version_id": "CF-AWARD-seed-extract-v1",
+  "representation": "curated_web_extract",
+  "reviewed_on": "2026-09-26",
+  "review_method": "Manually transcribed bounded passages from public web-tool reading; not original HTTP bytes",
+  "upstream_http_status": null,
+  "upstream_body_sha256": null,
+  "acquired_at": null,
+  "publication_timezone": "Europe/London",
+  "coverage": "selected passages only",
+  "schema_version": "0.4"
+}
