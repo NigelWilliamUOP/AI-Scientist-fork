@@ -1,13 +1,14 @@
 # Optional BootLoops verification adapter
 
-Added 2 October 2026 to the three-agent lifecycle branch. This is an original,
-BootLoops-inspired adapter, not an installation of the upstream toolkit.
+Added 2 October 2026 to the three-agent lifecycle branch. The arithmetic adapter is original and BootLoops-inspired. The actual upstream
+toolkit is also installed in an isolated environment. See BOOTLOOPS_INSTALLATION.md
+for the reproducible setup, simulation control and validation limits.
 
 Sources: https://bootloops.ai/harness.html and
 https://github.com/BootLoops-ai/bootloops/tree/66b680ce742e654cfe86da4f072a69061fe182b1 .
 Upstream code is MIT; upstream documentation is CC BY 4.0. No upstream code or
-documentation is vendored. The upstream snapshot is recorded for attribution,
-not a claim that its full suite ran here.
+documentation is vendored. The upstream snapshot is pinned for reproduction. Its full package runner has
+now been executed; receipts are in bootloops_selftest_results.json.
 
 ## Executable integration
 
@@ -53,6 +54,6 @@ SRO materials and private data outside public Git.
 For certified quadrature, Bayesian evidence or interval arithmetic, assess the
 relevant upstream guide and dependency requirements before writing a reviewed
 adapter. BootLoops' precision standard for analytic physics is not a general
-acceptance threshold for empirical social science. No arbitrary command execution,
-dependency installation, paid model call, empirical study, automatic claim
-promotion or global skill installation is introduced by this addition.
+acceptance threshold for empirical social science. The toolkit installer explicitly installs dependencies and runs upstream code.
+The original adapter introduces no model-generated code execution. No paid model
+call, empirical study, automatic claim promotion or global skill installation ran.
