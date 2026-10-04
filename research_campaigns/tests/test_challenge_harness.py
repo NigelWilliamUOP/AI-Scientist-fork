@@ -107,6 +107,10 @@ class ChallengeHarnessTests(unittest.TestCase):
                 self.assertEqual(report["selected_status"], "survives_current_challenge")
                 self.assertEqual(report["confirmatory_status"], "exploratory_existing_data")
                 self.assertEqual(report["contrary_evidence_retained"], ["E2"])
+                self.assertIn("mechanism_builder", report["selected_theory_package"])
+                self.assertIn("rival_theory_builder", report["selected_theory_package"])
+                self.assertIn("discriminating_test_designer", report["selected_theory_package"])
+                self.assertIn("theoretical_contribution_editor", report["selected_theory_package"])
                 self.assertEqual(ledger.verify()["integrity"], "passed")
             finally:
                 ledger.close()
