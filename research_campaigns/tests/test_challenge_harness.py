@@ -74,7 +74,8 @@ class ChallengeHarnessTests(unittest.TestCase):
         self.assertNotIn("'gold'", public)
         for mutation in DEFAULT_MUTATIONS:
             self.assertNotIn(mutation.mutation_id, public)
-            self.assertNotIn("mutation_probe", public)
+            self.assertNotIn(mutation.family, public)
+        self.assertNotIn("mutation_probe", public)
         clean = cases[0]["packet"]["candidate_propositions"][0]
         mutated = cases[1]["packet"]["candidate_propositions"][0]
         self.assertEqual(clean.get("confirmatory_status"), mutated.get("confirmatory_status"))
