@@ -1,0 +1,46 @@
+{
+  "schema": "challenge-harness-validation-v1",
+  "harness_version": "challenge-harness-0.1",
+  "validated_commit": "d46426192227cb6191b7058b481062da5cefda2e",
+  "github_actions_run_id": 37185957964,
+  "github_actions_conclusion": "success",
+  "runtime": {
+    "os": "ubuntu-24.04",
+    "python": "3.13.15"
+  },
+  "checks": {
+    "compileall": "passed",
+    "research_campaign_test_suite": {
+      "status": "passed",
+      "tests": 142,
+      "elapsed_seconds": 2.404
+    },
+    "offline_mutation_demo": {
+      "status": "passed",
+      "mutations": 10,
+      "mutation_recall": 1,
+      "consequential_mutation_recall": 1,
+      "clean_false_positive_rate": 0,
+      "ledger_integrity": "passed",
+      "selected_status": "survives_current_challenge",
+      "live_model_calls": 0,
+      "external_spend_usd": 0
+    }
+  },
+  "validated_blobs": {
+    "research_campaigns/challenge_harness.py": "5c34c23f32a33d712461f15020cd56fb6a6ed8e8",
+    "research_campaigns/challenge_demo.py": "384ba3eaee906ff87857227a500b63303e4344a3",
+    "research_campaigns/challenge_cli.py": "e2b9a6c9b2f0603d6aebebeea0d3876db695dfef",
+    "research_campaigns/tests/test_challenge_harness.py": "e77742dbda82143853ac72f3fecd31bc3deaa75c",
+    "research_campaigns/providers.py": "a703309ba9c6d3ea418bf2a5dbe66b86ccc71bed",
+    "research_campaigns/CHALLENGE_HARNESS.md": "00ea1c2bca5171fe467098ca897ce7e1e2fd0982",
+    "research_campaigns/README.md": "ea847eb5900ab588a22221428c099381bfb22885"
+  },
+  "limits": [
+    "Validation used deterministic synthetic fixtures only.",
+    "No live LLM or external scholarly retrieval was evaluated.",
+    "Mutation recall measures planted-fault detection, not scientific validity.",
+    "Selected challenge status is an orchestration result, not proof or journal acceptance."
+  ],
+  "workflow_note": "A temporary branch-only validation workflow produced this receipt and was removed after the successful run."
+}
