@@ -444,10 +444,8 @@ def apply_mutation(base: dict[str, Any], mutation: Mutation) -> dict[str, Any]:
         a["source_cluster"], b["source_cluster"] = "cluster_A", "cluster_B"
     elif family == "source_direction_flip":
         evidence["claimed_direction"] = "challenges" if evidence["direction"] == "supports" else "supports"
-        evidence["mutation_probe"] = family
     elif family == "boundary_overreach":
         prop["scope"] = {"population": "all organisations", "place": "global", "time": "all periods"}
-        prop["mutation_probe"] = family
     return packet
 
 
