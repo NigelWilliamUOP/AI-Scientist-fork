@@ -17,9 +17,16 @@ from research_campaigns.providers import TASKS
 
 class RepairWorker(DeterministicChallengeWorker):
     def complete(self, role, context):
-        if role in {"methods_verifier", "statistics_verifier", "evidence_verifier", "reproducibility_verifier", "comparative_reviewer"}:
-            return {"verdict": "repair", "first_failing_step": "scope",
-                    "confirmed_steps": [], "findings": ["scope needs repair"], "codes": []}
+        if role in {"methods_verifier", "statistics_verifier", "evidence_verifier", "reproducibility_verifier", "publication_verifier", "comparative_reviewer"}:
+            answer = {"verdict": "repair", "first_failing_step": "scope",
+                      "confirmed_steps": [], "findings": ["scope needs repair"], "codes": []}
+            if role == "publication_verifier":
+                answer["criteria"] = {"contribution": .5, "novelty_positioning": .5,
+                                      "discriminating_test": .5, "scope_precision": .5,
+                                      "robustness": .5}
+            if role == "evidence_verifier":
+                answer["support_strength"] = "moderate"
+            return answer
         return super().complete(role, context)
 
 
@@ -67,6 +74,10 @@ class ChallengeHarnessTests(unittest.TestCase):
         self.assertNotIn("'gold'", public)
         for mutation in DEFAULT_MUTATIONS:
             self.assertNotIn(mutation.mutation_id, public)
+            self.assertNotIn("mutation_probe", public)
+        clean = cases[0]["packet"]["candidate_propositions"][0]
+        mutated = cases[1]["packet"]["candidate_propositions"][0]
+        self.assertEqual(clean.get("confirmatory_status"), mutated.get("confirmatory_status"))
 
     def test_gold_has_expected_labels(self):
         gold = mutation_gold(generate_mutation_suite(synthetic_packet()))
