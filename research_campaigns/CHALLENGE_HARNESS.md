@@ -16,18 +16,20 @@ formulations. Each proposition receives five independent attacks:
 - measurement/confounding challenge;
 - boundary-condition and transportability challenge.
 
-Four verification gates then check methods, statistics, evidence and
-reproducibility. A comparative reviewer checks the whole round for assumptions or
-source dependencies shared by every attempt. Failing propositions can receive a
-single append-only repair with a new proposition ID. The final state is one of
+Five verification gates then check methods, statistics, evidence, reproducibility
+and publication contribution/positioning. A comparative reviewer checks the whole
+round for assumptions or source dependencies shared by every attempt. Failing
+propositions can be repaired across bounded rounds, with each revision receiving a
+new proposition ID. The final state is one of
 `survives_current_challenge`, `repair_required`, `challenged`,
 `unsupported` or `inconclusive`.
 
 The score is a **search utility**, not a probability of truth, effect,
-publication or acceptance. It favours evidence support, passing gates,
-theoretical contribution, discriminating tests, precise scope and robustness.
-A rejection penalty prevents a superficially novel but methodologically broken
-proposition from winning.
+publication or acceptance. It favours independently verified evidence support, passing gates, theoretical
+contribution, novelty positioning, discriminating tests, precise scope and
+robustness. The proposition generator cannot award itself those components: the
+evidence and publication verifiers supply them. A rejection penalty prevents a
+superficially novel but methodologically broken proposition from winning.
 
 ## Publication-seeking constraints
 
