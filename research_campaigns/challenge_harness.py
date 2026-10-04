@@ -23,7 +23,7 @@ ATTACK_ROLES = (
 )
 GATE_ROLES = (
     "methods_verifier", "statistics_verifier", "evidence_verifier",
-    "reproducibility_verifier",
+    "reproducibility_verifier", "publication_verifier",
 )
 ROLE_SPECS = {
     "proposition_builder": """Generate 2-5 defensible propositions. Optimise contribution, discriminating predictions, evidence alignment and precise scope. Never change frozen outcomes, exclusions, evidence vintages or suppress contrary evidence. Return {"candidates":[{"proposition_id":"...","statement":"...","claim_type":"descriptive|associational|predictive|causal|mechanistic","scope":{},"outcome":"exact frozen outcome","falsifier":"...","contribution":"...","publishability":{"contribution":0-1,"discriminating_test":0-1,"scope_precision":0-1,"robustness":0-1}}]}.""",
@@ -34,8 +34,9 @@ ROLE_SPECS = {
     "boundary_conditions": """Attack transportability and identify narrower population, place, period or mechanism boundaries that produce a stronger defensible proposition. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
     "methods_verifier": """Verification gate: treat each methodological step as unestablished. Check design, estimand, sampling unit, confounding, selection, reverse causation, controls, multiplicity and prespecification. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
     "statistics_verifier": """Verification gate: treat each numerical statement as unestablished. Check denominators, estimates, uncertainty, dependence, assumptions and robustness. Nonsignificance is not equivalence. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
-    "evidence_verifier": """Verification gate: treat each source-to-claim link as wrong until checked. Check contrary evidence, source dependence and temporal leakage. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "evidence_verifier": """Verification gate: treat each source-to-claim link as wrong until checked. Check contrary evidence, source dependence and temporal leakage. Independently rate how strongly the supplied evidence supports the bounded proposition. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."],"support_strength":"strong|moderate|weak|none"}.""",
     "reproducibility_verifier": """Verification gate: check immutable inputs, provenance, code/environment/run evidence and that planned or failed work is not described as completed. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "publication_verifier": """Verification gate for proposition value, not journal acceptance. Judge whether the bounded proposition could support a publishable contribution if the stated evidence survives. Novelty must be evidence-bounded; absence from a quick search is not novelty. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."],"criteria":{"contribution":0-1,"novelty_positioning":0-1,"discriminating_test":0-1,"scope_precision":0-1,"robustness":0-1}}. Scores are search utilities, not publication probabilities.""",
     "comparative_reviewer": """Compare attempts side-by-side for shared assumptions, shared inputs, contradictions and false consensus caused by correlated evidence or models. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
     "proposition_repair": """Repair by narrowing scope, sharpening a discriminating mechanism or increasing uncertainty. Never change frozen data/outcomes/exclusions/vintages or hide contrary evidence. Use a new proposition_id. Return {"proposition":{"proposition_id":"...","statement":"...","claim_type":"descriptive|associational|predictive|causal|mechanistic","scope":{},"outcome":"exact frozen outcome","falsifier":"...","contribution":"...","publishability":{"contribution":0-1,"discriminating_test":0-1,"scope_precision":0-1,"robustness":0-1}}}.""",
 }
@@ -67,6 +68,7 @@ class ChallengeConfig:
     support_weight: float = 2.0
     gate_weight: float = 2.0
     contribution_weight: float = 1.25
+    novelty_weight: float = 1.0
     discrimination_weight: float = 1.25
     scope_weight: float = 0.75
     robustness_weight: float = 1.0
@@ -208,24 +210,26 @@ def _unit(value: Any, default: float = 0.5) -> float:
 def score_proposition(prop: dict[str, Any], attempts: dict[str, dict[str, Any]],
                       gates: dict[str, dict[str, Any]], comparative: dict[str, Any],
                       cfg: ChallengeConfig) -> dict[str, Any]:
-    support = {"strong": 1.0, "moderate": .66, "weak": .33, "none": 0.0, "not_applicable": 0.0}[attempts["support_builder"]["support_strength"]]
+    support_label = gates["evidence_verifier"].get("support_strength", attempts["support_builder"]["support_strength"])
+    support = {"strong": 1.0, "moderate": .66, "weak": .33, "none": 0.0, "not_applicable": 0.0}.get(support_label, 0.0)
     verdicts = [gates[r]["verdict"] for r in GATE_ROLES] + [comparative["verdict"]]
     gate_map = {"accept": 1.0, "repair": .5, "inconclusive": .25, "reject": 0.0}
     gate_score = sum(gate_map[v] for v in verdicts) / len(verdicts)
     reject_fraction = verdicts.count("reject") / len(verdicts)
-    pub = prop.get("publishability", {})
+    pub = gates["publication_verifier"].get("criteria", {})
     contribution = _unit(pub.get("contribution"))
+    novelty = _unit(pub.get("novelty_positioning"))
     discrimination = _unit(pub.get("discriminating_test"))
     scope = _unit(pub.get("scope_precision"))
     robustness = _unit(pub.get("robustness"))
     raw = (
         cfg.support_weight * support + cfg.gate_weight * gate_score
-        + cfg.contribution_weight * contribution
+        + cfg.contribution_weight * contribution + cfg.novelty_weight * novelty
         + cfg.discrimination_weight * discrimination
         + cfg.scope_weight * scope + cfg.robustness_weight * robustness
         - cfg.rejection_penalty * reject_fraction
     )
-    maximum = cfg.support_weight + cfg.gate_weight + cfg.contribution_weight + cfg.discrimination_weight + cfg.scope_weight + cfg.robustness_weight
+    maximum = cfg.support_weight + cfg.gate_weight + cfg.contribution_weight + cfg.novelty_weight + cfg.discrimination_weight + cfg.scope_weight + cfg.robustness_weight
     score = max(0.0, min(1.0, raw / maximum))
     if "reject" in verdicts:
         status = "challenged"
@@ -240,6 +244,9 @@ def score_proposition(prop: dict[str, Any], attempts: dict[str, dict[str, Any]],
     return {
         "search_score": round(score, 6), "status": status,
         "support_component": support, "gate_component": gate_score,
+        "publication_components": {"contribution": contribution, "novelty_positioning": novelty,
+                                   "discriminating_test": discrimination, "scope_precision": scope,
+                                   "robustness": robustness},
         "interpretation": "Search utility only; not probability of truth or publication.",
     }
 
@@ -260,6 +267,11 @@ def _run_one(run_id: str, packet: dict[str, Any], prop: dict[str, Any], worker: 
     gate_context = {**context, "attempts": attempts, "mechanical_findings": mechanical_scan(packet)}
     for role in GATE_ROLES:
         gates[role] = _gate(_invoke(worker, role, gate_context))
+        if role == "publication_verifier":
+            criteria = gates[role].get("criteria")
+            required_criteria = {"contribution", "novelty_positioning", "discriminating_test", "scope_precision", "robustness"}
+            if not isinstance(criteria, dict) or not required_criteria.issubset(criteria):
+                raise ContractError("publication_verifier missing criteria")
         ledger.put(f"challenge_gates:{run_id}", f"r{round_number}:{prop['proposition_id']}:{role}", gates[role], actor="verifier:" + worker.name)
     comparative = _gate(_invoke(worker, "comparative_reviewer", {**gate_context, "gates": gates}))
     ledger.put(f"challenge_gates:{run_id}", f"r{round_number}:{prop['proposition_id']}:comparative", comparative, actor="verifier:" + worker.name)
@@ -552,10 +564,15 @@ class DeterministicChallengeWorker:
                     "support_strength": strength, "limitations": ["No semantic scientific judgement."]}
         if role in GATE_ROLES or role == "comparative_reviewer":
             relevant = codes if role in {"methods_verifier", "statistics_verifier", "evidence_verifier", "comparative_reviewer"} else []
-            return {"verdict": "reject" if relevant else "accept",
-                    "first_failing_step": relevant[0] if relevant else None,
-                    "confirmed_steps": [] if relevant else ["fixture_structure"],
-                    "findings": relevant, "codes": relevant}
+            answer = {"verdict": "reject" if relevant else "accept",
+                      "first_failing_step": relevant[0] if relevant else None,
+                      "confirmed_steps": [] if relevant else ["fixture_structure"],
+                      "findings": relevant, "codes": relevant}
+            if role == "evidence_verifier":
+                answer["support_strength"] = "moderate" if any(e["direction"] == "supports" for e in evidence) else "none"
+            if role == "publication_verifier":
+                answer["criteria"] = {"contribution": .6, "novelty_positioning": .5, "discriminating_test": .7, "scope_precision": .9, "robustness": .6}
+            return answer
         if role == "proposition_repair":
             revised = copy.deepcopy(prop)
             revised["proposition_id"] += "R1"
