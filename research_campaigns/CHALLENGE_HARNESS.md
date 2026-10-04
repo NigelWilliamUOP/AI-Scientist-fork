@@ -60,6 +60,46 @@ No model, network or spend is enabled by default. The existing provider adapter
 still requires explicit network permission, a positive spend cap, current
 operator-supplied rates and credentials.
 
+## Theory-building collaborator mode
+
+The default sequence now builds theory before it attacks it. Four collaborator roles
+produce an explicit mechanism, serious rival theories, discriminating tests and the
+strongest bounded theoretical contribution. The adversarial roles and verifier gates
+then receive this complete theory package. This means the system is rewarded for
+turning a weak descriptive association into a precise, testable theoretical
+proposition, while still preserving a route to reject it.
+
+The collaborator phase does not turn a proposed mechanism into evidence. Its outputs
+remain theory objects until measurements bear on them.
+
+## Scientific red-team tournament
+
+The graded tournament contains 60 blinded cases: 12 clean controls and 48 theory
+mutations across 12 families, with four severity levels per family. The families
+cover circular mechanisms, non-discriminating tests, construct drift, straw rivals,
+post-treatment and collider controls, novelty overclaim, boundary erasure,
+mechanism/evidence conflation, temporal reversal, hidden auxiliary assumptions and
+level-of-analysis mismatch.
+
+A blinded GPT-5.6 Sol development pass on 4 October 2026 produced:
+
+- overall mutation recall: **43/48 (89.6%)**;
+- consequential-defect recall (severity 2-4): **36/36 (100%)**;
+- clean-control false-positive rate: **0/12**;
+- severity-1 recall: **7/12 (58.3%)**;
+- severity 2, 3 and 4 recall: **12/12 at each level**.
+
+The five severity-1 misses are informative. They include wording such as “consistent
+with the proposed mechanism”, a bounded search “suggesting possible novelty”, and a
+transport statement framed as “may apply”. These are contestable reviewer prompts,
+not unequivocal scientific errors. The benchmark should therefore treat severity 1
+as a **calibration/challenge tier**, with severity 2-4 as the consequential-error
+primary endpoint.
+
+This was not independent validation: the same model family helped design the
+benchmark, and the cases are synthetic. Full details and the fixed-detection hash
+are in `red_team_semantic_evaluation_2026-10-04.json`.
+
 ## Research mutation benchmark
 
 The benchmark creates one clean control plus ten single-fault mutations:
