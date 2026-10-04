@@ -1,0 +1,69 @@
+{
+  "schema": "challenge-harness-validation-v2",
+  "harness_version": "challenge-harness-0.1",
+  "validated_commit": "4ecaf8d53a69b16a57b8ceae2c51c66fe6c9ea2b",
+  "github_actions_run_id": 37188822647,
+  "github_actions_conclusion": "success",
+  "runtime": {
+    "os": "ubuntu-24.04",
+    "python": "3.13.15"
+  },
+  "checks": {
+    "compileall": "passed",
+    "research_campaign_test_suite": {
+      "status": "passed",
+      "tests": 149,
+      "elapsed_seconds": 1.899
+    },
+    "red_team_generator": {
+      "status": "passed",
+      "public_cases": 60,
+      "hard_sample_cases": 28
+    },
+    "prior_structural_mutation_control": {
+      "mutations": 10,
+      "mutation_recall": 1,
+      "consequential_mutation_recall": 1,
+      "clean_false_positive_rate": 0,
+      "live_model_calls": 0,
+      "external_spend_usd": 0
+    },
+    "semantic_scientific_red_team": {
+      "model": "GPT-5.6 Sol (in-chat development diagnostic)",
+      "cases": 60,
+      "mutations": 48,
+      "clean_controls": 12,
+      "mutation_recall": 0.8958333333333334,
+      "consequential_recall": 1,
+      "clean_false_positive_rate": 0,
+      "severity_recall": {
+        "1": 0.5833333333333334,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "independent_validation": false
+    }
+  },
+  "validated_blobs": {
+    "research_campaigns/challenge_harness.py": "91b69eee01e35c72dd7dfa67b8e4c48cfe3c6685",
+    "research_campaigns/scientific_red_team.py": "ae378b17e499923f1c646d6da12b8925699c3e57",
+    "research_campaigns/red_team_cli.py": "a4c8d4b7f471dc4c5d041ba871788b3d8ab106ff",
+    "research_campaigns/tests/test_challenge_harness.py": "3fecab6f03cd78e48604deb16052a5216fd4f319",
+    "research_campaigns/tests/test_scientific_red_team.py": "e20fe81c9d00d7cb8c22f4b556c09bd6e48cab26",
+    "research_campaigns/CHALLENGE_HARNESS.md": "ae4749728622cd4c8c4886f5917bf19a1beee203",
+    "research_campaigns/red_team_semantic_evaluation_2026-10-04.json": "08a8908387fbfc4f93ea93448e12acab72a032d2",
+    "research_campaigns/providers.py": "a703309ba9c6d3ea418bf2a5dbe66b86ccc71bed"
+  },
+  "post_validation_changes": [
+    "Removed the temporary branch-only GitHub Actions workflow.",
+    "Updated this machine-readable validation receipt."
+  ],
+  "interpretation": "Primary red-team endpoint is consequential-defect recall (severity 2-4). Severity 1 is retained as a contestable challenge/calibration tier rather than treated as an unequivocal error.",
+  "limits": [
+    "The semantic red-team run used synthetic cases and the same model family that helped design the benchmark.",
+    "Case-to-label mapping was hidden during classification, but this is not independent human or cross-model validation.",
+    "No live external model API calls, real-project holdout or journal-panel evaluation was performed.",
+    "Search scores and red-team metrics do not establish scientific truth or publication probability."
+  ]
+}

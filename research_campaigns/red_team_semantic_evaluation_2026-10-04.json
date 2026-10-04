@@ -1,0 +1,73 @@
+{
+  "schema": "scientific-red-team-semantic-evaluation-v1",
+  "date": "2026-10-04",
+  "model": "GPT-5.6 Sol (in-chat development diagnostic)",
+  "tournament": "60 cases: 12 clean controls + 48 theory mutations; four severities across 12 families",
+  "blinding": "Worker packets were classified before the full gold mapping was inspected. A 28-case severity-3/4 sample had already been scored before the full pass.",
+  "detections_sha256": "374b4d777a57ac83c6294c0f1236c49e703425ba7077a0f39002e4ac04e35977",
+  "cases": 60,
+  "mutations": 48,
+  "clean_controls": 12,
+  "mutation_recall": 0.8958333333333334,
+  "consequential_recall": 1,
+  "clean_false_positive_rate": 0,
+  "severity_recall": {
+    "1": 0.5833333333333334,
+    "2": 1,
+    "3": 1,
+    "4": 1
+  },
+  "family_recall": {
+    "boundary_erasure": 0.75,
+    "circular_mechanism": 1,
+    "collider_control": 1,
+    "construct_drift": 1,
+    "hidden_auxiliary_assumption": 0.75,
+    "level_mismatch": 1,
+    "mechanism_evidence_conflation": 0.75,
+    "non_discriminating_test": 0.75,
+    "novelty_overclaim": 0.75,
+    "post_treatment_control": 1,
+    "straw_rival": 1,
+    "temporal_reversal": 1
+  },
+  "misses": [
+    {
+      "case_id": "rt-2f714e04463839e8",
+      "family": "non_discriminating_test",
+      "severity": 1,
+      "reason": "Rival prediction remained less specific than the focal temporal prediction, so the test still had some discriminatory value."
+    },
+    {
+      "case_id": "rt-544a67dee7e13b12",
+      "family": "mechanism_evidence_conflation",
+      "severity": 1,
+      "reason": "Saying the association is consistent with the proposed mechanism was judged appropriately cautious rather than evidential conflation."
+    },
+    {
+      "case_id": "rt-62e8c8d6a4ff272f",
+      "family": "novelty_overclaim",
+      "severity": 1,
+      "reason": "A bounded targeted search suggesting possible novelty was judged acceptable when explicitly qualified."
+    },
+    {
+      "case_id": "rt-8abeee3b6a1bdc89",
+      "family": "boundary_erasure",
+      "severity": 1,
+      "reason": "May apply across comparable UK organisations was treated as a transport hypothesis, not an established generalisation."
+    },
+    {
+      "case_id": "rt-d36d3e0acc49fdfc",
+      "family": "hidden_auxiliary_assumption",
+      "severity": 1,
+      "reason": "The timing assumption was stated explicitly in the analysis note, so it was not treated as hidden."
+    }
+  ],
+  "interpretation": "Development diagnostic. All severity-2 to severity-4 planted defects were detected, while five severity-1 cases were not flagged because their wording remained scientifically defensible or explicitly qualified. Severity 1 should therefore be treated as a contestable-challenge calibration tier, not necessarily a true error.",
+  "limits": [
+    "The same model family designed the taxonomy and later classified the synthetic cases, although case-to-label mapping was hidden during classification.",
+    "Synthetic mutations are not representative prevalence estimates for real manuscripts.",
+    "No external model API calls, independent human adjudication or real-project holdout was used.",
+    "Consequential recall uses the preregistered benchmark convention severity >= 2."
+  ]
+}
