@@ -230,6 +230,27 @@ credentials and unpublished institutional data outside authorised manifests and
 out of public Git. A party with full filesystem access can replace a complete
 ledger; an independently stored head hash is needed for stronger tamper evidence.
 
+## Social-science challenge harness
+
+An optional adversarial layer is documented in [CHALLENGE_HARNESS.md](CHALLENGE_HARNESS.md).
+It searches across bounded proposition formulations, then subjects each to five
+challenge roles, five verifier gates and a comparative review. Evidence support
+and publication-value components are assigned by verifier roles rather than the
+proposition generator. The resulting search score is not a probability of truth
+or publication.
+
+The companion research-mutation benchmark provides one clean control plus ten
+single-fault cases covering causal overclaim, measurement/proxy error, numeric
+and denominator drift, temporal leakage, outcome switching, false equivalence,
+false independence, source-direction reversal and boundary overreach. Gold
+labels are excluded from the worker-facing packets.
+
+```bash
+python -m research_campaigns.challenge_cli demo \
+  --output ./research_campaigns_runs/challenge-demo
+python -m unittest research_campaigns.tests.test_challenge_harness -v
+```
+
 ## Test coverage and external validation still needed
 
 `test_agents.py` implements all 16 behaviour scenarios from the design pack,
