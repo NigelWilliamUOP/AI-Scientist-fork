@@ -26,18 +26,18 @@ GATE_ROLES = (
     "reproducibility_verifier",
 )
 ROLE_SPECS = {
-    "proposition_builder": "Generate 2-5 defensible propositions. Optimise contribution, discriminating predictions, evidence alignment and precise scope. Never change frozen outcomes, exclusions, evidence vintages or suppress contrary evidence.",
-    "support_builder": "Build the strongest evidence-bounded case. State exactly what is supported and expose every auxiliary assumption.",
-    "falsifier": "Try to defeat the proposition with counterexamples, negative controls and observations incompatible with it under declared assumptions.",
-    "rival_mechanisms": "Develop genuinely different rivals including confounding, reverse causation, selection, context, competing mechanisms and chance. Give discriminating tests.",
-    "measurement_confounds": "Attack construct validity, proxy use, preprocessing, missingness, leakage and unit-of-analysis choices.",
-    "boundary_conditions": "Attack transportability and identify narrower population, place, period or mechanism boundaries that produce a stronger defensible proposition.",
-    "methods_verifier": "Verification gate: treat each methodological step as unestablished. Check design, estimand, sampling unit, confounding, selection, reverse causation, controls, multiplicity and prespecification.",
-    "statistics_verifier": "Verification gate: treat each numerical statement as unestablished. Check denominators, estimates, uncertainty, dependence, assumptions and robustness. Nonsignificance is not equivalence.",
-    "evidence_verifier": "Verification gate: treat each source-to-claim link as wrong until checked. Check contrary evidence, source dependence and temporal leakage.",
-    "reproducibility_verifier": "Verification gate: check immutable inputs, provenance, code/environment/run evidence and that planned or failed work is not described as completed.",
-    "comparative_reviewer": "Compare attempts side-by-side for shared assumptions, shared inputs, contradictions and false consensus caused by correlated evidence or models.",
-    "proposition_repair": "Repair by narrowing scope, sharpening a discriminating mechanism or increasing uncertainty. Never change frozen data/outcomes/exclusions/vintages or hide contrary evidence.",
+    "proposition_builder": """Generate 2-5 defensible propositions. Optimise contribution, discriminating predictions, evidence alignment and precise scope. Never change frozen outcomes, exclusions, evidence vintages or suppress contrary evidence. Return {"candidates":[{"proposition_id":"...","statement":"...","claim_type":"descriptive|associational|predictive|causal|mechanistic","scope":{},"outcome":"exact frozen outcome","falsifier":"...","contribution":"...","publishability":{"contribution":0-1,"discriminating_test":0-1,"scope_precision":0-1,"robustness":0-1}}]}.""",
+    "support_builder": """Build the strongest evidence-bounded case. State exactly what is supported and expose every auxiliary assumption. Return {"summary":"...","findings":["..."],"support_strength":"strong|moderate|weak|none","limitations":["..."]}.""",
+    "falsifier": """Try to defeat the proposition with counterexamples, negative controls and observations incompatible with it under declared assumptions. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
+    "rival_mechanisms": """Develop genuinely different rivals including confounding, reverse causation, selection, context, competing mechanisms and chance. Give discriminating tests. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
+    "measurement_confounds": """Attack construct validity, proxy use, preprocessing, missingness, leakage and unit-of-analysis choices. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
+    "boundary_conditions": """Attack transportability and identify narrower population, place, period or mechanism boundaries that produce a stronger defensible proposition. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
+    "methods_verifier": """Verification gate: treat each methodological step as unestablished. Check design, estimand, sampling unit, confounding, selection, reverse causation, controls, multiplicity and prespecification. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "statistics_verifier": """Verification gate: treat each numerical statement as unestablished. Check denominators, estimates, uncertainty, dependence, assumptions and robustness. Nonsignificance is not equivalence. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "evidence_verifier": """Verification gate: treat each source-to-claim link as wrong until checked. Check contrary evidence, source dependence and temporal leakage. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "reproducibility_verifier": """Verification gate: check immutable inputs, provenance, code/environment/run evidence and that planned or failed work is not described as completed. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "comparative_reviewer": """Compare attempts side-by-side for shared assumptions, shared inputs, contradictions and false consensus caused by correlated evidence or models. Return {"verdict":"accept|repair|reject|inconclusive","first_failing_step":"..." or null,"confirmed_steps":["..."],"findings":["..."],"codes":["..."]}.""",
+    "proposition_repair": """Repair by narrowing scope, sharpening a discriminating mechanism or increasing uncertainty. Never change frozen data/outcomes/exclusions/vintages or hide contrary evidence. Use a new proposition_id. Return {"proposition":{"proposition_id":"...","statement":"...","claim_type":"descriptive|associational|predictive|causal|mechanistic","scope":{},"outcome":"exact frozen outcome","falsifier":"...","contribution":"...","publishability":{"contribution":0-1,"discriminating_test":0-1,"scope_precision":0-1,"robustness":0-1}}}.""",
 }
 
 
@@ -314,17 +314,25 @@ def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
     else:
         ledger.put("challenge_runs", run_id, run_record)
 
-    candidates = copy.deepcopy(packet["candidate_propositions"])
-    if not candidates:
-        built = _invoke(worker, "proposition_builder", {"question": packet, "max_propositions": cfg.max_propositions})
-        candidates = built.get("candidates", [])
-        if not isinstance(candidates, list) or not candidates:
-            raise ContractError("proposition_builder returned no candidates")
-        candidates = candidates[:cfg.max_propositions]
-        for prop in candidates:
+    candidates = copy.deepcopy(packet["candidate_propositions"])[:cfg.max_propositions]
+    if len(candidates) < cfg.max_propositions:
+        built = _invoke(worker, "proposition_builder", {
+            "question": packet,
+            "seed_propositions": candidates,
+            "max_propositions": cfg.max_propositions,
+            "instruction": "Add distinct defensible alternatives where useful; do not merely paraphrase seed propositions.",
+        })
+        proposed = built.get("candidates", [])
+        if not isinstance(proposed, list):
+            raise ContractError("proposition_builder candidates must be a list")
+        seen = {p["proposition_id"] for p in candidates}
+        for prop in proposed:
             validate_proposition(prop, packet)
-    else:
-        candidates = candidates[:cfg.max_propositions]
+            if prop["proposition_id"] not in seen and len(candidates) < cfg.max_propositions:
+                candidates.append(prop)
+                seen.add(prop["proposition_id"])
+    if not candidates:
+        raise ContractError("Challenge requires at least one usable proposition")
     ledger.put(f"challenge_candidates:{run_id}", "initial", {"candidates": candidates})
 
     results = []
@@ -445,12 +453,12 @@ def apply_mutation(base: dict[str, Any], mutation: Mutation) -> dict[str, Any]:
 
 def generate_mutation_suite(base: dict[str, Any],
                             mutations: Iterable[Mutation] = DEFAULT_MUTATIONS) -> list[dict[str, Any]]:
-    validate_question_packet(copy.deepcopy(base))
-    cases = [{"case_id": "case-" + digest({"base": base})[:16], "packet": copy.deepcopy(base),
+    normalised = validate_question_packet(copy.deepcopy(base))
+    cases = [{"case_id": "case-" + digest(normalised)[:16], "packet": copy.deepcopy(normalised),
               "gold": {"mutation_id": None, "family": None, "expected_codes": [], "consequential": False}}]
     for mutation in mutations:
-        packet = apply_mutation(base, mutation)
-        case_id = "case-" + digest({"packet": packet, "opaque": digest(mutation.mutation_id)})[:16]
+        packet = apply_mutation(normalised, mutation)
+        case_id = "case-" + digest(packet)[:16]
         cases.append({"case_id": case_id, "packet": packet,
                       "gold": {"mutation_id": mutation.mutation_id, "family": mutation.family,
                                "expected_codes": [mutation.expected_code], "consequential": mutation.consequential}})
@@ -471,10 +479,13 @@ def baseline_mutation_detector(packet: dict[str, Any]) -> list[str]:
     packet = validate_question_packet(copy.deepcopy(packet))
     codes = {f["code"] for f in mechanical_scan(packet)}
     for item in packet["evidence"]:
-        if item.get("mutation_probe") == "source_direction_flip" and item.get("claimed_direction") != item.get("direction"):
+        if "claimed_direction" in item and item.get("claimed_direction") != item.get("direction"):
             codes.add("SOURCE_DIRECTION_FLIP")
+    broad_scope_tokens = {"all organisations", "global", "all periods", "all populations", "all settings"}
     for prop in packet["candidate_propositions"]:
-        if prop.get("mutation_probe") == "boundary_overreach" and prop.get("scope") != packet.get("scope"):
+        changed = prop.get("scope") != packet.get("scope")
+        broadened = any(str(value).strip().lower() in broad_scope_tokens for value in prop.get("scope", {}).values())
+        if changed and broadened:
             codes.add("BOUNDARY_OVERREACH")
     return sorted(codes)
 
