@@ -1,0 +1,41 @@
+name: red-team-validation
+on:
+  push:
+    branches:
+      - agent/social-science-challenge-harness-v0-1
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Compile
+        run: python -m compileall -q research_campaigns
+      - name: Test research campaigns
+        run: python -m unittest discover -s research_campaigns/tests -v
+      - name: Generate red-team tournament
+        run: |
+          mkdir -p red_team_out
+          python -m research_campaigns.red_team_cli make --public red_team_out/public.json --gold red_team_out/gold.json --sample red_team_out/sample.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("red_team_out/sample.json").read_text())
+          print("SAMPLE_CASES", len(p))
+          print("PUBLIC_CASES", len(json.loads(Path("red_team_out/public.json").read_text())))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: red-team-public
+          path: |
+            red_team_out/public.json
+            red_team_out/sample.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: red-team-gold
+          path: red_team_out/gold.json
