@@ -17,6 +17,10 @@ from .core import ContractError, Denied, Ledger, digest, instant, safe_id
 
 VERSION = "challenge-harness-0.1"
 CLAIM_TYPES = {"descriptive", "associational", "predictive", "causal", "mechanistic"}
+THEORY_ROLES = (
+    "mechanism_builder", "rival_theory_builder",
+    "discriminating_test_designer", "theoretical_contribution_editor",
+)
 ATTACK_ROLES = (
     "support_builder", "falsifier", "rival_mechanisms",
     "measurement_confounds", "boundary_conditions",
@@ -27,6 +31,10 @@ GATE_ROLES = (
 )
 ROLE_SPECS = {
     "proposition_builder": """Generate 2-5 defensible propositions. Optimise contribution, discriminating predictions, evidence alignment and precise scope. Never change frozen outcomes, exclusions, evidence vintages or suppress contrary evidence. Return {"candidates":[{"proposition_id":"...","statement":"...","claim_type":"descriptive|associational|predictive|causal|mechanistic","scope":{},"outcome":"exact frozen outcome","falsifier":"...","contribution":"...","publishability":{"contribution":0-1,"discriminating_test":0-1,"scope_precision":0-1,"robustness":0-1}}]}.""",
+    "mechanism_builder": """Act as a theory-building collaborator. Turn the bounded proposition into an explicit mechanism without pretending the mechanism has been observed. Separate constructs, actors/units, causal or associational links, timing and boundary conditions. Return {"mechanism":"...","constructs":["..."],"links":[{"from":"...","to":"...","relation":"...","status":"proposed"}],"boundary_conditions":["..."],"assumptions":["..."],"limitations":["..."]}.""",
+    "rival_theory_builder": """Build 2-4 serious rival theories from different explanatory classes. Do not create straw rivals. Return {"rivals":[{"rival_id":"R1","statement":"...","mechanism":"...","shared_predictions":["..."],"different_predictions":["..."],"boundary_conditions":["..."]}],"limitations":["..."]}.""",
+    "discriminating_test_designer": """Design tests that separate the focal mechanism from at least one serious rival. Prefer existing data, untouched holdouts or new periods before proposing new collection. Every test needs predicted outcomes under the focal theory and rival, plus an inconclusive branch. Return {"tests":[{"test_id":"T1","measurement":"...","focal_prediction":"...","rival_id":"R1","rival_prediction":"...","inconclusive":"...","decision_consequence":"...","existing_data_possible":true}],"limitations":["..."]}.""",
+    "theoretical_contribution_editor": """State what the theory changes relative to a weaker descriptive account: mechanism, boundary condition, construct relationship or rival resolution. Do not claim novelty from search absence. Return {"contribution":"...","strongest_publishable_formulation":"...","claims_to_avoid":["..."],"novelty_status":"unverified|bounded_search_support|established_by_review","limitations":["..."]}.""",
     "support_builder": """Build the strongest evidence-bounded case. State exactly what is supported and expose every auxiliary assumption. Return {"summary":"...","findings":["..."],"support_strength":"strong|moderate|weak|none","limitations":["..."]}.""",
     "falsifier": """Try to defeat the proposition with counterexamples, negative controls and observations incompatible with it under declared assumptions. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
     "rival_mechanisms": """Develop genuinely different rivals including confounding, reverse causation, selection, context, competing mechanisms and chance. Give discriminating tests. Return {"summary":"...","findings":["..."],"support_strength":"not_applicable","limitations":["..."]}.""",
@@ -259,6 +267,12 @@ def _run_one(run_id: str, packet: dict[str, Any], prop: dict[str, Any], worker: 
         "evidence": packet["evidence"], "proposition": prop,
         "objective": "Find the strongest defensible publishable proposition while retaining all contrary evidence and frozen boundaries.",
     }
+    theory = {}
+    for role in THEORY_ROLES:
+        theory[role] = _invoke(worker, role, {**context, "prior_theory": theory})
+        ledger.put(f"challenge_theory:{run_id}", f"r{round_number}:{prop['proposition_id']}:{role}",
+                   theory[role], actor="collaborator:" + worker.name)
+    context["theory_package"] = theory
     attempts = {}
     for role in ATTACK_ROLES:
         attempts[role] = _attack(_invoke(worker, role, context))
@@ -280,7 +294,9 @@ def _run_one(run_id: str, packet: dict[str, Any], prop: dict[str, Any], worker: 
         [f["code"] for f in gate_context["mechanical_findings"]]
         + [c for g in gates.values() for c in g["codes"]] + comparative["codes"]
     ))
-    result = {"round": round_number, "proposition": prop, "attempts": attempts, "gates": gates, "comparative_review": comparative, "score": score, "finding_codes": codes}
+    result = {"round": round_number, "proposition": prop, "theory_package": theory,
+              "attempts": attempts, "gates": gates, "comparative_review": comparative,
+              "score": score, "finding_codes": codes}
     ledger.put(f"challenge_rounds:{run_id}", f"r{round_number}:{prop['proposition_id']}", result)
     return result
 
@@ -293,6 +309,7 @@ def _repair(run_id: str, packet: dict[str, Any], result: dict[str, Any],
         "run_id": run_id, "round": round_number,
         "original_proposition": result["proposition"],
         "frozen_question": {k: packet[k] for k in ("question_id", "question", "observation", "claim_type", "scope", "cutoff", "data_exposure", "outcome", "unit_of_analysis")},
+        "theory_package": result.get("theory_package", {}),
         "gates": result["gates"], "comparative_review": result["comparative_review"],
         "contrary_evidence": [e for e in packet["evidence"] if e["direction"] == "challenges"],
     })
@@ -380,6 +397,7 @@ def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
         "selected_status": selected["score"]["status"],
         "selected_search_score": selected["score"]["search_score"],
         "confirmatory_status": selected["proposition"].get("confirmatory_status"),
+        "selected_theory_package": selected.get("theory_package", {}),
         "ranked_candidates": [
             {"proposition_id": r["proposition"]["proposition_id"], "round": r["round"],
              "status": r["score"]["status"], "search_score": r["score"]["search_score"],
@@ -557,6 +575,30 @@ class DeterministicChallengeWorker:
                 "contribution": "Bounded empirical proposition for adversarial development.",
                 "publishability": {"contribution": .6, "discriminating_test": .7, "scope_precision": .9, "robustness": .6},
             }]}
+        if role == "mechanism_builder":
+            return {"mechanism": "Exposure X changes verification workload, which increases the bounded stress outcome.",
+                    "constructs": ["exposure X", "verification workload", "institutional stress"],
+                    "links": [{"from": "exposure X", "to": "verification workload", "relation": "increases", "status": "proposed"},
+                              {"from": "verification workload", "to": "institutional stress", "relation": "increases", "status": "proposed"}],
+                    "boundary_conditions": ["synthetic organisations", "2025-2026"],
+                    "assumptions": ["verification workload is measured comparably"], "limitations": ["Mechanism unobserved."]}
+        if role == "rival_theory_builder":
+            return {"rivals": [{"rival_id": "R1", "statement": "A common workload shock drives both exposure and stress.",
+                                "mechanism": "common cause", "shared_predictions": ["positive association"],
+                                "different_predictions": ["association attenuates after workload control"],
+                                "boundary_conditions": ["high workload periods"]}],
+                    "limitations": ["Synthetic fixture."]}
+        if role == "discriminating_test_designer":
+            return {"tests": [{"test_id": "T1", "measurement": "verification workload",
+                               "focal_prediction": "exposure precedes increased verification workload",
+                               "rival_id": "R1", "rival_prediction": "workload rises before or independently of exposure",
+                               "inconclusive": "timing is too coarse", "decision_consequence": "retain both explanations",
+                               "existing_data_possible": True}], "limitations": ["Synthetic fixture."]}
+        if role == "theoretical_contribution_editor":
+            return {"contribution": "Reframes the association as a bounded verification-workload mechanism.",
+                    "strongest_publishable_formulation": "A bounded mechanism proposition plus a rival-discriminating test.",
+                    "claims_to_avoid": ["universal causality"], "novelty_status": "unverified",
+                    "limitations": ["No live novelty review."]}
         if role in ATTACK_ROLES:
             strength = "moderate" if role == "support_builder" and any(e["direction"] == "supports" for e in evidence) else "not_applicable"
             findings = ["Contrary evidence retained."] if role == "falsifier" and any(e["direction"] == "challenges" for e in evidence) else []
