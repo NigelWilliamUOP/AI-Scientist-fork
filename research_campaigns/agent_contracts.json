@@ -11,6 +11,15 @@
       "command": "study",
       "unit_of_work": "bounded_study",
       "implemented_methods": ["describe", "ols"],
+      "optional_arithmetic_verification": {
+        "cli_flag": "--verify-arithmetic",
+        "default": false,
+        "route": "exact_decimal_arithmetic_comparator",
+        "timing": "before_manuscript_generation",
+        "on_disagreement": "abstain_without_manuscript",
+        "scientific_validity": "unverified",
+        "upstream_engine_executed": false
+      },
       "worker_tasks": ["study_plan", "study_write", "study_critic"],
       "terminal_statuses": ["review_candidate", "abstained", "blocked_data", "stopped_budget"],
       "denied_actions": ["arbitrary_code_execution", "hidden_file_read", "rewrite_frozen_design", "self_award_journal_readiness", "public_release"]

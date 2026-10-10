@@ -36,6 +36,8 @@ def parser() -> argparse.ArgumentParser:
             sub.add_argument("--allow-private-to-model", action="store_true")
         if name == "study":
             sub.add_argument("--brief", type=Path, required=True)
+            sub.add_argument("--verify-arithmetic", action="store_true",
+                             help="Check supported arithmetic independently before manuscript generation")
         if name == "programme-init":
             sub.add_argument("--baseline", type=Path, required=True)
         if name in {"programme-update", "programme-amend"}:
@@ -115,7 +117,8 @@ def execute(args: argparse.Namespace) -> dict:
         else:
             session = Session(ledger, provider, budget)
             if args.command == "study":
-                outcome = StudyProducer(ledger, session).run(read_json(args.brief), sources, synthetic=args.synthetic)
+                outcome = StudyProducer(ledger, session, verify_arithmetic=args.verify_arithmetic).run(
+                    read_json(args.brief), sources, synthetic=args.synthetic)
             else:
                 outcome = OpportunityScout(ledger, session).run(read_json(args.portfolio), sources, args.cutoff,
                     synthetic=args.synthetic, queue_limit=args.queue_limit, retrieval_errors=errors)
