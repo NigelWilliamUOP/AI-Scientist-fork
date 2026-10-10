@@ -1,4 +1,9 @@
-# Social-science challenge harness v0.1
+# Social-science challenge harness v0.2
+
+For new questions, start with [evidence-bound ideation](IDEATION.md). It freezes
+an independent baseline before candidate generation, checks mechanism mappings,
+requires disconfirming search receipts and reviews every repaired candidate.
+Previously exposed propositions retain the existing direct challenge path.
 
 This module extends the research-lifecycle and assurance work with an adversarial
 research-question harness. Its optimisation target is **a defensible proposition

@@ -1,5 +1,10 @@
 # Three research-lifecycle agents, version 0.2.0
 
+The challenge harness now includes an [IdeaScientist-inspired pre-proposal
+stage](IDEATION.md): frozen blind baselines, explicit mechanism transfers,
+candidate-bound disconfirmation and social-science contribution types. Run its
+offline control with `python -m research_campaigns.challenge_cli ideation-demo`.
+
 Executable first implementation for `NigelWilliamUOP/AI-Scientist-fork`.
 Adds a self-contained package; it does not modify the legacy launchers, SRO pilot,
 research manuscripts, accepted results, or evaluation holdouts.

@@ -21,6 +21,9 @@ def main() -> None:
     demo = sub.add_parser("demo")
     demo.add_argument("--output", type=Path, default=Path("research_campaigns_runs/challenge-demo"))
 
+    ideation = sub.add_parser("ideation-demo", help="Run the synthetic pre-proposal safeguards through the existing harness")
+    ideation.add_argument("--output", type=Path, default=Path("research_campaigns_runs/ideation-demo"))
+
     challenge = sub.add_parser("challenge-baseline")
     challenge.add_argument("packet", type=Path)
     challenge.add_argument("--ledger", type=Path, required=True)
@@ -39,7 +42,10 @@ def main() -> None:
     sub.add_parser("synthetic-packet")
     args = parser.parse_args()
 
-    if args.command == "demo":
+    if args.command == "ideation-demo":
+        from .ideation_demo import run_demo as run_ideation_demo
+        result = run_ideation_demo(args.output)
+    elif args.command == "demo":
         result = run_demo(args.output)
     elif args.command == "challenge-baseline":
         ledger = Ledger(args.ledger)

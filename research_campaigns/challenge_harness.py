@@ -13,9 +13,9 @@ from collections import Counter
 from dataclasses import dataclass
 from typing import Any, Iterable, Protocol
 
-from .core import ContractError, Denied, Ledger, digest, instant, safe_id
+from .core import ContractError, Denied, Ledger, code_fingerprint, digest, instant, safe_id
 
-VERSION = "challenge-harness-0.1"
+VERSION = "challenge-harness-0.2"
 CLAIM_TYPES = {"descriptive", "associational", "predictive", "causal", "mechanistic"}
 THEORY_ROLES = (
     "mechanism_builder", "rival_theory_builder",
@@ -65,7 +65,10 @@ class SessionChallengeWorker:
         self.name = f"challenge:{g}|verify:{v}"
 
     def complete(self, role: str, context: dict[str, Any]) -> dict[str, Any]:
-        session = self.verifier_session if role in {*GATE_ROLES, "comparative_reviewer"} else self.generator_session
+        session = self.verifier_session if role in {
+            *GATE_ROLES, "comparative_reviewer", "ideation_blind_baseline",
+            "ideation_reviewer", "ideation_baseline_comparator",
+        } else self.generator_session
         return session.ask("challenge_role", {"challenge_role": role, **context})
 
 
@@ -185,7 +188,7 @@ def mechanical_scan(packet: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _invoke(worker: Worker, role: str, context: dict[str, Any]) -> dict[str, Any]:
-    response = worker.complete(role, {"role_contract": ROLE_SPECS[role], **context})
+    response = worker.complete(role, {"role_contract": ROLE_SPECS[role], **copy.deepcopy(context)})
     if not isinstance(response, dict):
         raise ContractError("Worker response must be a JSON object")
     return response
@@ -260,13 +263,35 @@ def score_proposition(prop: dict[str, Any], attempts: dict[str, dict[str, Any]],
 
 
 def _run_one(run_id: str, packet: dict[str, Any], prop: dict[str, Any], worker: Worker,
-             ledger: Ledger, cfg: ChallengeConfig, round_number: int) -> dict[str, Any]:
+             ledger: Ledger, cfg: ChallengeConfig, round_number: int,
+             ideation_guard: Any | None = None) -> dict[str, Any]:
+    ideation_review = None
+    if ideation_guard is not None:
+        if ideation_guard.empirical_hash != digest(packet["evidence"]):
+            raise Denied("Empirical evidence changed after ideation admission")
+        ideation_review = ideation_guard.review(copy.deepcopy(prop))
+        if ideation_review["candidate_hash"] != digest(prop):
+            raise Denied("Ideation review targets a different proposition")
+        if ideation_review["empirical_evidence_hash"] != digest(packet["evidence"]):
+            raise Denied("Ideation review targets different empirical evidence")
+        if ideation_review["verdict"] != "survive":
+            status = {"revise": "repair_required", "reject": "challenged", "unverified": "inconclusive"}[ideation_review["verdict"]]
+            result = {"round": round_number, "proposition": copy.deepcopy(prop),
+                      "theory_package": {}, "attempts": {}, "gates": {},
+                      "comparative_review": ideation_review, "ideation_review": ideation_review,
+                      "score": {"search_score": 0.0, "status": status,
+                                "interpretation": "Pre-proposal gate has not survived."},
+                      "finding_codes": ["IDEATION_" + ideation_review["verdict"].upper()]}
+            ledger.put(f"challenge_rounds:{run_id}", f"r{round_number}:{prop['proposition_id']}", result)
+            return result
     context = {
         "run_id": run_id, "round": round_number,
         "question": {k: packet[k] for k in ("question_id", "question", "observation", "claim_type", "scope", "cutoff", "data_exposure", "outcome", "unit_of_analysis")},
         "evidence": packet["evidence"], "proposition": prop,
         "objective": "Find the strongest defensible publishable proposition while retaining all contrary evidence and frozen boundaries.",
     }
+    if ideation_review is not None:
+        context["ideation_review"] = ideation_review
     theory = {}
     for role in THEORY_ROLES:
         theory[role] = _invoke(worker, role, {**context, "prior_theory": theory})
@@ -278,7 +303,8 @@ def _run_one(run_id: str, packet: dict[str, Any], prop: dict[str, Any], worker: 
         attempts[role] = _attack(_invoke(worker, role, context))
         ledger.put(f"challenge_attempts:{run_id}", f"r{round_number}:{prop['proposition_id']}:{role}", attempts[role], actor="worker:" + worker.name)
     gates = {}
-    gate_context = {**context, "attempts": attempts, "mechanical_findings": mechanical_scan(packet)}
+    current_packet = {**packet, "candidate_propositions": [prop]}
+    gate_context = {**context, "attempts": attempts, "mechanical_findings": mechanical_scan(current_packet)}
     for role in GATE_ROLES:
         gates[role] = _gate(_invoke(worker, role, gate_context))
         if role == "publication_verifier":
@@ -296,7 +322,7 @@ def _run_one(run_id: str, packet: dict[str, Any], prop: dict[str, Any], worker: 
     ))
     result = {"round": round_number, "proposition": prop, "theory_package": theory,
               "attempts": attempts, "gates": gates, "comparative_review": comparative,
-              "score": score, "finding_codes": codes}
+              "score": score, "finding_codes": codes, "ideation_review": ideation_review}
     ledger.put(f"challenge_rounds:{run_id}", f"r{round_number}:{prop['proposition_id']}", result)
     return result
 
@@ -311,6 +337,7 @@ def _repair(run_id: str, packet: dict[str, Any], result: dict[str, Any],
         "frozen_question": {k: packet[k] for k in ("question_id", "question", "observation", "claim_type", "scope", "cutoff", "data_exposure", "outcome", "unit_of_analysis")},
         "theory_package": result.get("theory_package", {}),
         "gates": result["gates"], "comparative_review": result["comparative_review"],
+        "ideation_review": result.get("ideation_review"),
         "contrary_evidence": [e for e in packet["evidence"] if e["direction"] == "challenges"],
     })
     prop = response.get("proposition")
@@ -326,13 +353,16 @@ def _repair(run_id: str, packet: dict[str, Any], result: dict[str, Any],
 
 
 def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
-                  run_id: str, config: ChallengeConfig | None = None) -> dict[str, Any]:
+                  run_id: str, config: ChallengeConfig | None = None,
+                  ideation_guard: Any | None = None) -> dict[str, Any]:
     safe_id(run_id)
     cfg = config or ChallengeConfig()
     cfg.validate()
     packet = validate_question_packet(copy.deepcopy(packet))
     question_hash = digest(packet)
-    run_record = {"version": VERSION, "question_hash": question_hash, "config": cfg.__dict__, "worker": worker.name}
+    run_record = {"version": VERSION, "runtime_fingerprint": code_fingerprint(),
+                  "question_hash": question_hash, "config": cfg.__dict__, "worker": worker.name,
+                  "ideation_fingerprint": getattr(ideation_guard, "fingerprint", None)}
     old = ledger.get("challenge_runs", run_id)
     if old is not None:
         if old != run_record:
@@ -345,6 +375,8 @@ def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
 
     candidates = copy.deepcopy(packet["candidate_propositions"])[:cfg.max_propositions]
     if len(candidates) < cfg.max_propositions:
+        if ideation_guard is not None:
+            raise Denied("Guarded candidates must be generated after the frozen baseline")
         built = _invoke(worker, "proposition_builder", {
             "question": packet,
             "seed_propositions": candidates,
@@ -369,9 +401,9 @@ def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
     for round_number in range(1, cfg.max_rounds + 1):
         next_round = []
         for prop in candidates:
-            result = _run_one(run_id, packet, prop, worker, ledger, cfg, round_number)
+            result = _run_one(run_id, packet, prop, worker, ledger, cfg, round_number, ideation_guard)
             results.append(result)
-            if result["score"]["status"] == "repair_required" and prop["proposition_id"] not in repaired_ids:
+            if round_number < cfg.max_rounds and result["score"]["status"] == "repair_required" and prop["proposition_id"] not in repaired_ids:
                 revised = _repair(run_id, packet, result, worker, ledger, round_number)
                 if revised is not None:
                     repaired_ids.add(prop["proposition_id"])
@@ -382,7 +414,10 @@ def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
         if not candidates:
             break
 
+    reviewed_ids = {r["proposition"]["proposition_id"] for r in results}
+    superseded_ids = {v["repair_of"] for key, v in ledger.items(f"challenge_repairs:{run_id}") if key in reviewed_ids}
     ranked = sorted(results, key=lambda r: (
+        r["proposition"]["proposition_id"] not in superseded_ids,
         r["score"]["status"] == "survives_current_challenge",
         r["score"]["search_score"], -r["round"],
     ), reverse=True)
@@ -398,6 +433,8 @@ def run_challenge(packet: dict[str, Any], worker: Worker, ledger: Ledger, *,
         "selected_search_score": selected["score"]["search_score"],
         "confirmatory_status": selected["proposition"].get("confirmatory_status"),
         "selected_theory_package": selected.get("theory_package", {}),
+        "selected_ideation_review": selected.get("ideation_review"),
+        "ideation_status": "not_run" if ideation_guard is None else "candidate_bound_review",
         "ranked_candidates": [
             {"proposition_id": r["proposition"]["proposition_id"], "round": r["round"],
              "status": r["score"]["status"], "search_score": r["score"]["search_score"],
