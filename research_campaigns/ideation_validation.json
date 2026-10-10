@@ -1,0 +1,61 @@
+{
+  "checks": {
+    "compileall": "passed",
+    "diff_whitespace": "passed",
+    "ideation_synthetic_control": {
+      "baseline_frozen": true,
+      "external_spend_usd": 0,
+      "ledger_integrity": "passed",
+      "live_literature_searches": 0,
+      "live_model_calls": 0,
+      "real_nhs_data_used": false,
+      "role_call_reservation_scope": "Ideation stages only",
+      "role_calls_reserved": 5,
+      "scientific_validity_established": false,
+      "search_operations_reserved": 6,
+      "status": "survives_current_challenge",
+      "total_worker_calls_measured": 20
+    },
+    "legacy_challenge_synthetic_control": {
+      "clean_false_positive_rate": 0.0,
+      "consequential_mutation_recall": 1.0,
+      "empirical_evidence": false,
+      "external_spend_usd": 0,
+      "harness_version": "challenge-harness-0.2",
+      "ledger_integrity": "passed",
+      "live_model_calls": 0,
+      "mutation_cases": 10,
+      "mutation_recall": 1.0,
+      "scientific_validity_established": false,
+      "selected_status": "survives_current_challenge"
+    },
+    "research_campaigns_tests": {
+      "failed": 0,
+      "new_tests": 38,
+      "passed": 187
+    }
+  },
+  "code_sha256": {
+    "research_campaigns/CHALLENGE_HARNESS.md": "d6f254575abf30b01a647ac76f3bb2543a96049f5ebe74aaa02e735dc7846093",
+    "research_campaigns/IDEATION.md": "e0aa3103946592ce30042fbbfc4ec8138b4252e33edab7c0f671dfedbae6e5b0",
+    "research_campaigns/README.md": "ac9c7e9645fc3a43c72f435d52566c5935c71f103c6b353ab380c3692539ddac",
+    "research_campaigns/challenge_cli.py": "13fbfcc77e29f551316de9950b1d98e017bd3b4c6e5cebe2f4be61ba05daab91",
+    "research_campaigns/challenge_harness.py": "641569ae9ca7dc23a60612aca75797a16a23c72077991b9e0ea7d7b7c98be89a",
+    "research_campaigns/ideation.py": "43c5723b05173f7130367bf9e4ea80a9d5d052ee422a3c8e80624588e0fbbede",
+    "research_campaigns/ideation_demo.py": "fe54da68eff5ada2fed85c76d132a1cf7284ea5bbec5bcd92ba9fd7af8802ca4",
+    "research_campaigns/providers.py": "4c8a78157e5452d46f7e08b987e69fcd50ddc244498aef27dace207511c30ba4",
+    "research_campaigns/tests/test_ideation.py": "ac79169926a27dc38a0abd5e3aaeef16faa093276dc994aed0c04f047d58e727"
+  },
+  "date": "2026-10-10",
+  "external_spend_usd": 0,
+  "independent_human_adjudication": "not_run",
+  "inspiration_commit": "ce9185bc8ebd3e0dfb29bccc318dfd33845304b1",
+  "live_literature_searches": 0,
+  "live_model_calls": 0,
+  "main_modified": false,
+  "parent_commit": "d94697a76fa1ef42074b20b255edb863df96d6c9",
+  "python": "3.12.14",
+  "scientific_validity_established": false,
+  "scope": "Entire research_campaigns package; legacy repository and BootLoops branch were not tested.",
+  "version": "ideation-validation-v0.2"
+}
