@@ -69,8 +69,11 @@ def manuscript(document: dict, status: str) -> str:
 class StudyProducer:
     agent_id = "study_producer"
 
-    def __init__(self, ledger: Ledger, session: Session):
+    def __init__(self, ledger: Ledger, session: Session, *, verify_arithmetic: bool = False):
+        if type(verify_arithmetic) is not bool:
+            raise ContractError("verify_arithmetic must be an explicit boolean")
         self.ledger, self.session = ledger, session
+        self.verify_arithmetic = verify_arithmetic
 
     def run(self, brief: dict, sources: list[dict], *, synthetic: bool = False) -> dict:
         require(brief, {"study_id", "title", "question", "target_journal", "allowed_methods", "source_ids", "cutoff"})
@@ -79,11 +82,17 @@ class StudyProducer:
         if not brief["allowed_methods"] or not set(brief["allowed_methods"]).issubset(METHODS):
             raise Denied("The brief must specify audited methods only")
         self.ledger.put("study_briefs", ident, brief, "operator")
+        self.ledger.put("study_verification_policies", ident,
+                        {"verify_arithmetic": self.verify_arithmetic}, "operator")
         authorised = [s for s in sources if s.get("source_id") in brief["source_ids"]]
         eligible, excluded = select_sources(authorised, brief["cutoff"], allow_synthetic=synthetic)
         self.ledger.put("study_input_manifests", ident, {"source_keys": [source_key(s) for s in eligible], "excluded": excluded})
         cached = self.ledger.get("study_results", ident)
         if cached is not None:
+            expected = "exact_decimal_arithmetic_comparator" if self.verify_arithmetic else "not_requested"
+            recorded = cached.get("arithmetic_verification", {}).get("verification_class", "not_requested")
+            if cached.get("analysis") is not None and recorded != expected:
+                raise Denied("Cached study was produced under a different verification policy; use a new workspace")
             return cached
         broker = EvidenceBroker(eligible, self.ledger)
         base = {"study_id": ident, "excluded_sources": excluded, "evidence_mode": "synthetic_fixture" if synthetic else "supplied_secondary_evidence"}
@@ -105,6 +114,21 @@ class StudyProducer:
             if calculation != replicated:
                 raise ContractError("Arithmetic replay mismatch")
             self.ledger.put("study_analyses", ident, calculation, self.agent_id)
+            arithmetic = {"status": "not_requested", "verification_class": "not_requested"}
+            if self.verify_arithmetic:
+                from .bootloops import seal, verify
+                check_id = "study-" + digest([ident, calculation["analysis_hash"], source["sha256"]])[:32]
+                seal(self.ledger, check_id, plan, source, calculation["result"],
+                     role=self.agent_id, cutoff=brief["cutoff"])
+                arithmetic = verify(self.ledger, check_id)
+                self.ledger.put("study_arithmetic_checks", ident,
+                                {"check_id": check_id, "report": arithmetic}, self.agent_id)
+                if arithmetic["status"] != "numerically_checked":
+                    return self._finish(ident, result(self.agent_id, "abstained", **base,
+                        analysis=calculation, design=proposal,
+                        reason="Independent arithmetic verification failed; manuscript generation blocked",
+                        arithmetic_verification=arithmetic,
+                        arithmetic_replay="passed_same_implementation", independent_replication="not_run"))
             write_context = {**context, "plan": plan, "analysis": calculation, "synthetic": source["kind"] == "synthetic"}
             draft = self.session.ask("study_write", write_context)
             require(draft, {"title", "sections", "claims", "fatal_defects"})
@@ -141,6 +165,7 @@ class StudyProducer:
             outcome = result(self.agent_id, status, **base, analysis=calculation, design=proposal,
                 candidate=draft, manuscript_markdown=manuscript(draft, status), defects=defects,
                 arithmetic_replay="passed_same_implementation", independent_replication="not_run",
+                arithmetic_verification=arithmetic,
                 novelty_review="not_completed", semantic_claim_verification="requires_review",
                 model_critique=critique, portfolio_amendment_status="proposal_only")
             return self._finish(ident, outcome)
