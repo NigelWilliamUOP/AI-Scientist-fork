@@ -1,0 +1,168 @@
+{
+  "clean_controls": [
+    {
+      "draft_produced": true,
+      "gate_status": "numerically_checked",
+      "method": "describe"
+    },
+    {
+      "draft_produced": true,
+      "gate_status": "numerically_checked",
+      "method": "ols"
+    }
+  ],
+  "detected": 16,
+  "fixture_class": "synthetic_same_route_mutations",
+  "live_model_calls": 0,
+  "mutations": [
+    {
+      "drafting_blocked": true,
+      "field": "n",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "missing_rows",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "mean",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "minimum",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "maximum",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "sample_sd",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "n",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "ols",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "missing_rows",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "ols",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "slope",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "ols",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "intercept",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "ols",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "residual_sum_squares",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "ols",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "r_squared",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "ols",
+      "mutation": "add_one",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "n",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "fractional_count",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "missing_rows",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "float_count",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "sample_sd",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "negative_sd",
+      "same_route_replay": "passed_same_implementation"
+    },
+    {
+      "drafting_blocked": true,
+      "field": "unreviewed_statistic",
+      "gate_status": "failed",
+      "ledger_integrity": "passed",
+      "method": "describe",
+      "mutation": "extra_field",
+      "same_route_replay": "passed_same_implementation"
+    }
+  ],
+  "passed": true,
+  "runtime_fingerprint": "747debe82c43952563bd9660c048d6c7a831c20d36dcf7a003b2eec1fed593eb",
+  "scientific_validity": "not_evaluated",
+  "total": 16,
+  "upstream_engine_executed": false
+}

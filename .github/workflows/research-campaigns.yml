@@ -1,0 +1,32 @@
+name: Research campaigns software controls
+
+on:
+  pull_request:
+    paths:
+      - 'research_campaigns/**'
+      - '.github/workflows/research-campaigns.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Package regression tests
+        run: python -m unittest discover -s research_campaigns/tests -q
+      - name: Compilation
+        run: python -m compileall -q research_campaigns
+      - name: Same-route numerical mutations
+        run: python -m research_campaigns.arithmetic_mutations > arithmetic-mutations.json
+      - name: Retain synthetic control report
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-arithmetic-mutations
+          path: arithmetic-mutations.json

@@ -1,0 +1,161 @@
+{
+  "checks": {
+    "compileall": "passed",
+    "diff_whitespace": "passed",
+    "research_campaigns_tests": {
+      "bootloops_adapter_tests": 6,
+      "failed": 0,
+      "new_integration_tests": 12,
+      "passed": 205
+    },
+    "synthetic_controls": {
+      "corrupt_same_route_control": {
+        "arithmetic_replay": "passed_same_implementation",
+        "arithmetic_verification": {
+          "checks": {
+            "maximum": true,
+            "mean": false,
+            "minimum": true,
+            "missing_rows": true,
+            "n": true
+          },
+          "controls_passed": true,
+          "exact_values": {
+            "maximum": "40",
+            "mean": "25",
+            "minimum": "10",
+            "missing_rows": "0",
+            "n": "4"
+          },
+          "journal_readiness": "not_evaluated",
+          "scientific_validity": "unverified",
+          "seal_sha256": "9dd223f5431ab7b29ef98d5cdce22853ca7db7dc6ad343ec13a55c9e8caae6f3",
+          "status": "failed",
+          "unchecked_fields": [
+            "sample_sd"
+          ],
+          "upstream_engine_executed": false,
+          "verification_class": "exact_decimal_arithmetic_comparator"
+        },
+        "independent_replication": "not_run",
+        "ledger_integrity": "passed",
+        "manuscript_created": false,
+        "model_tasks": [
+          "study_plan"
+        ],
+        "scientific_status": "unverified",
+        "status": "abstained"
+      },
+      "descriptive": {
+        "arithmetic_replay": "passed_same_implementation",
+        "arithmetic_verification": {
+          "checks": {
+            "maximum": true,
+            "mean": true,
+            "minimum": true,
+            "missing_rows": true,
+            "n": true
+          },
+          "controls_passed": true,
+          "exact_values": {
+            "maximum": "40",
+            "mean": "25",
+            "minimum": "10",
+            "missing_rows": "0",
+            "n": "4"
+          },
+          "journal_readiness": "not_evaluated",
+          "scientific_validity": "unverified",
+          "seal_sha256": "8d3fbb5f7dd5014f52ca324e272d16973695cca7701ca9a03ee34f3fcefe0ee0",
+          "status": "numerically_checked",
+          "unchecked_fields": [
+            "sample_sd"
+          ],
+          "upstream_engine_executed": false,
+          "verification_class": "exact_decimal_arithmetic_comparator"
+        },
+        "independent_replication": "not_run",
+        "ledger_integrity": "passed",
+        "manuscript_created": true,
+        "model_tasks": [
+          "study_plan",
+          "study_write",
+          "study_critic"
+        ],
+        "scientific_status": "unverified",
+        "status": "review_candidate"
+      },
+      "ols": {
+        "arithmetic_replay": "passed_same_implementation",
+        "arithmetic_verification": {
+          "checks": {
+            "intercept": true,
+            "missing_rows": true,
+            "n": true,
+            "r_squared": true,
+            "residual_sum_squares": true,
+            "slope": true
+          },
+          "controls_passed": true,
+          "exact_values": {
+            "intercept": "0",
+            "missing_rows": "0",
+            "n": "4",
+            "r_squared": "1",
+            "residual_sum_squares": "0",
+            "slope": "2"
+          },
+          "journal_readiness": "not_evaluated",
+          "scientific_validity": "unverified",
+          "seal_sha256": "5f258b8d05f27c429b40942467c13b585e3bd8b90c06e2ef873f93b306f119c8",
+          "status": "numerically_checked",
+          "unchecked_fields": [
+            "identification"
+          ],
+          "upstream_engine_executed": false,
+          "verification_class": "exact_decimal_arithmetic_comparator"
+        },
+        "independent_replication": "not_run",
+        "ledger_integrity": "passed",
+        "manuscript_created": true,
+        "model_tasks": [
+          "study_plan",
+          "study_write",
+          "study_critic"
+        ],
+        "scientific_status": "unverified",
+        "status": "review_candidate"
+      }
+    }
+  },
+  "code_sha256": {
+    "research_campaigns/BOOTLOOPS.md": "11e38a601b0116e931bc89ac6108a01fc623940777a5a1b5693fec0246d7b2f7",
+    "research_campaigns/BOOTLOOPS_INSTALLATION.md": "be5fff604d063605f89cef9a311cc822c3cfd21e75da2d4c159f1a3c0bfdc650",
+    "research_campaigns/README.md": "419bae8f96d1f51abee3f728ae1920b68476d8a961d9d06f2aa2e55b316562d8",
+    "research_campaigns/__main__.py": "712f03fca629d85bf5f02ba9b9b07cfab9e78e5e7798a2cb201b1875e786218e",
+    "research_campaigns/agent_contracts.json": "e3c490e8c19adb433bfc541a04cd98c63c067f9320bbbd11bb7ff05859e42289",
+    "research_campaigns/agents.py": "3f86bf7649e71033f81311a39911a76591640bc52f4881c734d9c87577a54c46",
+    "research_campaigns/bootloops.py": "c4b0e08e4918f1f63ea38434be604c93883c2782ec6ee44893e917cc136fc0c3",
+    "research_campaigns/bootloops_requirements.lock": "fd344b029e68b9ccd6020db9fc7a18e70b8ce7f81d469811f8b55a98ddd3065b",
+    "research_campaigns/bootloops_selftest_results.json": "ca7178a9b3866728cf8986e9501c77815f9f9e25a9c5a610f9614c08215744ab",
+    "research_campaigns/bootloops_simulation_control.py": "50616449624381b8f1c72ecf1c1f93587ff7510157d973ce85655b27a41ea0bc",
+    "research_campaigns/install_bootloops.sh": "6e05c06f48ea7626e1f6652dc2ce33c70af978a1d0133604c496d86dcad605eb",
+    "research_campaigns/tests/test_bootloops.py": "7ded068b73e9d2be7c0685d2182152946d033a08d077ed9fe99ad845978c1984",
+    "research_campaigns/tests/test_bootloops_integration.py": "1289955fa30ff61f68570069ac6892ed7ba6f6710a442120454be10e0af19c1b"
+  },
+  "date": "2026-10-10",
+  "external_spend_usd": 0,
+  "live_model_calls": 0,
+  "main_modified": false,
+  "mcp_server_deployed": false,
+  "parent_commits": [
+    "6f3c81a321f932bb49c970c1d92648a95ddb51a2",
+    "99f121c752bf9860f37a60283dc85d58ceb67ba6"
+  ],
+  "python": "3.12.14",
+  "scientific_validity_established": false,
+  "scope": "Combined research_campaigns package and optional Study Producer arithmetic gate; legacy repository and upstream toolkit not rerun.",
+  "upstream_engine_executed": false,
+  "upstream_full_suite_rerun": false,
+  "version": "bootloops-integration-validation-v0.3"
+}

@@ -13,7 +13,7 @@ research manuscripts, accepted results, or evaluation holdouts.
 
 | Agent | Command | Implemented behaviour |
 |---|---|---|
-| Study Producer | `study` | Bounded method selection, frozen design, actual descriptive/OLS calculation, arithmetic replay, manuscript/claim package, separate critic, valid abstention. |
+| Study Producer | `study` | Bounded method selection, frozen design, actual descriptive/OLS calculation, arithmetic replay, optional independent arithmetic gate, manuscript/claim package, separate critic, valid abstention. |
 | Programme Steward | `programme-init`, `programme-update`, `programme-amend` | Frozen baseline and predictions, dated observation vintages, new-period/revision distinction, forecast compatibility tests, optional model interpretation, exploratory amendments. |
 | Opportunity Scout | `scout`, `replay` | Claim-specific proposals, dataset and join prechecks, rejected lookalikes, contradictions, existing-programme routing, bounded review queue and date-locked replay. |
 
@@ -85,6 +85,17 @@ artifact directories, with a SQLite event ledger in each workspace. Preserve the
 workspace when resuming exactly the same run. A changed brief, admitted evidence,
 provider, budget or runtime fingerprint needs a separately versioned workspace;
 an old completed result must not silently answer a new question.
+
+## Optional independent arithmetic verification
+
+Add `--verify-arithmetic` to a `study` command to check the actual descriptive/OLS
+output through the [BootLoops-inspired adapter](BOOTLOOPS.md) before drafting.
+Arithmetic disagreement blocks the manuscript and records an abstention. The
+report identifies checked fields, unchecked fields and exact decimal values;
+scientific validity and independent replication remain unverified. Defaults
+preserve the existing workflow. Use a new workspace when changing this policy.
+The separately pinned upstream toolkit and its historical test failures are
+documented in [BOOTLOOPS_INSTALLATION.md](BOOTLOOPS_INSTALLATION.md).
 
 ## Live model configuration
 
