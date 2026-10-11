@@ -58,10 +58,14 @@ def analyse(plan: dict, source: dict) -> dict:
             "method_version": "builtin-1", "source_sha256": source["sha256"], "source_kind": source["kind"]}
 
 
-def manuscript(document: dict, status: str) -> str:
+def manuscript(document: dict, status: str, arithmetic: dict | None = None) -> str:
     parts = ["# " + document["title"], "Status: " + status + ". Independent journal review: not evaluated."]
     for key, text in document["sections"].items():
         parts += ["## " + key.replace("_", " ").title(), text]
+    if arithmetic is not None:
+        parts += ["## Arithmetic verification", canonical(arithmetic),
+                  "Arithmetic agreement covers only the listed fields on the declared inputs. "
+                  "It does not establish measurement validity, causality or independent replication."]
     parts += ["## Claim ledger", canonical(document["claims"])]
     return "\n\n".join(parts) + "\n"
 
@@ -78,12 +82,15 @@ class StudyProducer:
     def run(self, brief: dict, sources: list[dict], *, synthetic: bool = False) -> dict:
         require(brief, {"study_id", "title", "question", "target_journal", "allowed_methods", "source_ids", "cutoff"})
         ident = safe_id(brief["study_id"])
+        self.ledger.verify()
         instant(brief["cutoff"])
         if not brief["allowed_methods"] or not set(brief["allowed_methods"]).issubset(METHODS):
             raise Denied("The brief must specify audited methods only")
         self.ledger.put("study_briefs", ident, brief, "operator")
         self.ledger.put("study_verification_policies", ident,
-                        {"verify_arithmetic": self.verify_arithmetic}, "operator")
+                        {"verify_arithmetic": self.verify_arithmetic,
+                         "runtime_fingerprint": code_fingerprint(),
+                         "synthetic": synthetic}, "operator")
         authorised = [s for s in sources if s.get("source_id") in brief["source_ids"]]
         eligible, excluded = select_sources(authorised, brief["cutoff"], allow_synthetic=synthetic)
         self.ledger.put("study_input_manifests", ident, {"source_keys": [source_key(s) for s in eligible], "excluded": excluded})
@@ -109,27 +116,17 @@ class StudyProducer:
                 raise Denied("The worker changed the authorised analysis scope")
             source = broker.read(plan.get("source_key", ""))
             self.ledger.put("study_designs", ident, proposal, self.agent_id)
-            calculation = analyse(plan, source)
-            replicated = analyse(plan, source)
-            if calculation != replicated:
-                raise ContractError("Arithmetic replay mismatch")
-            self.ledger.put("study_analyses", ident, calculation, self.agent_id)
-            arithmetic = {"status": "not_requested", "verification_class": "not_requested"}
-            if self.verify_arithmetic:
-                from .bootloops import seal, verify
-                check_id = "study-" + digest([ident, calculation["analysis_hash"], source["sha256"]])[:32]
-                seal(self.ledger, check_id, plan, source, calculation["result"],
-                     role=self.agent_id, cutoff=brief["cutoff"])
-                arithmetic = verify(self.ledger, check_id)
-                self.ledger.put("study_arithmetic_checks", ident,
-                                {"check_id": check_id, "report": arithmetic}, self.agent_id)
-                if arithmetic["status"] != "numerically_checked":
-                    return self._finish(ident, result(self.agent_id, "abstained", **base,
-                        analysis=calculation, design=proposal,
-                        reason="Independent arithmetic verification failed; manuscript generation blocked",
-                        arithmetic_verification=arithmetic,
-                        arithmetic_replay="passed_same_implementation", independent_replication="not_run"))
-            write_context = {**context, "plan": plan, "analysis": calculation, "synthetic": source["kind"] == "synthetic"}
+            calculation, arithmetic, replay = self._calculate(ident, plan, source, brief["cutoff"])
+            if self.verify_arithmetic and arithmetic["status"] != "numerically_checked":
+                details = {"analysis": calculation} if calculation is not None else {}
+                return self._finish(ident, result(self.agent_id, "abstained", **base, **details,
+                    design=proposal,
+                    reason="Independent arithmetic verification failed or unavailable; manuscript generation blocked",
+                    arithmetic_verification=arithmetic, arithmetic_replay=replay,
+                    independent_replication="not_run"))
+            write_context = {**context, "plan": plan, "analysis": calculation,
+                             "arithmetic_verification": arithmetic,
+                             "synthetic": source["kind"] == "synthetic"}
             draft = self.session.ask("study_write", write_context)
             require(draft, {"title", "sections", "claims", "fatal_defects"})
             require(draft["sections"], {"abstract", "methods", "results", "discussion", "limitations"})
@@ -163,7 +160,7 @@ class StudyProducer:
             defects += critique["fatal_defects"]
             status = "abstained" if defects else "review_candidate"
             outcome = result(self.agent_id, status, **base, analysis=calculation, design=proposal,
-                candidate=draft, manuscript_markdown=manuscript(draft, status), defects=defects,
+                candidate=draft, manuscript_markdown=manuscript(draft, status, arithmetic), defects=defects,
                 arithmetic_replay="passed_same_implementation", independent_replication="not_run",
                 arithmetic_verification=arithmetic,
                 novelty_review="not_completed", semantic_claim_verification="requires_review",
@@ -178,6 +175,53 @@ class StudyProducer:
         outcome["resources"] = self.session.resources()
         self.ledger.put("study_results", ident, outcome, self.agent_id)
         return outcome
+
+    def _calculate(self, ident: str, plan: dict, source: dict, cutoff: str) -> tuple:
+        """Record checked calculation failures before any drafting call.
+
+        Exceptions within the analysis/check stage are terminal abstentions.
+        Process interruption (BaseException) remains resumable through the
+        immutable design, analysis and seal checkpoints; no model retry occurs.
+        """
+        calculation = None
+        replay = "not_completed"
+        check_id = None
+        phase = "analysis"
+        arithmetic = {"status": "not_requested", "verification_class": "not_requested"}
+        try:
+            calculation = analyse(plan, source)
+            replicated = analyse(plan, source)
+            if calculation != replicated:
+                raise ContractError("Arithmetic replay mismatch")
+            replay = "passed_same_implementation"
+            self.ledger.put("study_analyses", ident, calculation, self.agent_id)
+            if self.verify_arithmetic:
+                from .bootloops import seal, verify
+                phase = "verification"
+                check_id = "study-" + digest([ident, calculation["analysis_hash"], source["sha256"]])[:32]
+                seal(self.ledger, check_id, plan, source, calculation["result"],
+                     role=self.agent_id, cutoff=cutoff)
+                arithmetic = verify(self.ledger, check_id)
+                require(arithmetic, {"status", "verification_class", "checks", "unchecked_fields"})
+                if arithmetic["status"] not in {"numerically_checked", "failed"}:
+                    raise ContractError("Unknown arithmetic verification outcome")
+        except Exception as exc:
+            if not self.verify_arithmetic:
+                raise
+            from .bootloops import VERSION
+            # Do not echo exception strings or potentially non-finite results
+            # into the ledger or model context.
+            calculation = None
+            arithmetic = {"status": "verification_timeout" if isinstance(exc, TimeoutError) else "verification_error",
+                          "verification_class": "exact_decimal_arithmetic_comparator",
+                          "comparator_version": VERSION, "error_type": type(exc).__name__,
+                          "failure_phase": phase, "checks": {}, "unchecked_fields": [],
+                          "scientific_validity": "unverified", "upstream_engine_executed": False,
+                          "retry_policy": "terminal_abstention_new_workspace_required"}
+        if self.verify_arithmetic:
+            self.ledger.put("study_arithmetic_checks", ident,
+                            {"check_id": check_id, "report": arithmetic}, self.agent_id)
+        return calculation, arithmetic, replay
 
 
 class ProgrammeSteward:

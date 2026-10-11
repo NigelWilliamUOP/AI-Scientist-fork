@@ -63,7 +63,11 @@ of verification before drafting, and immutable verification policies.
 A passing report means agreement for the checked arithmetic fields on declared
 decimal inputs. Measurement uncertainty, causal identification, construct validity,
 novelty and independent journal review remain unverified. Sample standard
-deviation and other unsupported fields are explicitly listed as unchecked.
+deviation is checked through rational bounds on exact sample variance, without
+another floating-point square root. Observation and missing-row counts must be
+integers with exact equality. Unexpected output fields fail the gate; the OLS
+`identification` label is non-numerical metadata and must retain its descriptive
+association value.
 A valid sealed prediction is an internal immutable record, not proof of prior
 public registration or external timestamp authentication. Both routes see the
 same data; this checks implementation, not independent evidence.
@@ -81,3 +85,42 @@ adapter. BootLoops' precision standard for analytic physics is not a general
 acceptance threshold for empirical social science. The toolkit installer explicitly installs dependencies and runs upstream code.
 The original adapter introduces no model-generated code execution. No paid model
 call, empirical study, automatic claim promotion or global skill installation ran.
+
+## Audit hardening, 11 October 2026
+
+Checked studies now record `verification_error` or `verification_timeout`
+abstentions on calculation/check exceptions, with no drafting call. They retain
+the exception type and failure stage, not arbitrary exception text or invalid
+numeric payloads. These results are terminal; a new workspace is needed to retry.
+Process interruptions retain immutable checkpoints and can resume with the same
+code, inputs and policy. An interrupted model call still needs the existing
+Session reconciliation; this change does not automatically retry it.
+
+The comparator checks a cooperative ten-second deadline while reading rows and
+accumulating rational values. This is not an OS-enforced process timeout or a
+validated upstream resource-control sandbox. There is no new arbitrary code
+execution. The row limit remains 100,000. A cached check is reused only after
+ledger integrity and the sealed runtime/version match have been checked.
+
+Study policy freezes the actual runtime fingerprint and synthetic-evidence flag.
+Existing workspaces created with the earlier policy cannot be upgraded in place;
+use a new workspace and retain the original history. Verification remains opt-in.
+The report is passed to writer and critic and appended by trusted code to the
+manuscript. That preserves verification scope, but does not independently check
+the model's wording or the numbers in its narrative.
+
+Run the finite mutation controls:
+
+```bash
+python -m research_campaigns.arithmetic_mutations
+python -m unittest research_campaigns.tests.test_arithmetic_audit -v
+python -m unittest discover -s research_campaigns/tests -q
+```
+
+The controls corrupt every supported output field while repeating the same
+incorrect result on replay, then test fractional/float counts, negative standard
+deviation and an extra unreviewed field. Two clean controls test false positives.
+Tests also cover numeric boundaries, unavailable checks, checkpoint interruption,
+fresh-process restart and deterministic analysis/report/manuscript reproduction.
+These are software controls on synthetic fixtures, not independent scientific
+approval or an upstream engine integration. General simulations remain unsupported.

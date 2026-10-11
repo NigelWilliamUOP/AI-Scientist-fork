@@ -46,7 +46,8 @@ class BootLoopsIntegrationTests(unittest.TestCase):
         report = result["arithmetic_verification"]
         self.assertEqual(report["status"], "numerically_checked")
         self.assertEqual(report["exact_values"]["mean"], "25")
-        self.assertIn("sample_sd", report["unchecked_fields"])
+        self.assertTrue(report["checks"]["sample_sd"])
+        self.assertNotIn("sample_sd", report["unchecked_fields"])
         self.assertEqual(result["independent_replication"], "not_run")
         self.assertEqual(report["scientific_validity"], "unverified")
         self.assertFalse(report["upstream_engine_executed"])

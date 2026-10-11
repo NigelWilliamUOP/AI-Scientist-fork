@@ -17,6 +17,12 @@
         "route": "exact_decimal_arithmetic_comparator",
         "timing": "before_manuscript_generation",
         "on_disagreement": "abstain_without_manuscript",
+        "on_error_or_timeout": "record_abstention_without_manuscript",
+        "sample_standard_deviation": "rational_bounds_on_exact_sample_variance",
+        "counts": "integer_exact_equality",
+        "unexpected_output_fields": "fail_gate",
+        "timeout": "cooperative_10_seconds_not_process_sandbox",
+        "resume_policy": "same_runtime_inputs_and_policy_only",
         "scientific_validity": "unverified",
         "upstream_engine_executed": false
       },
