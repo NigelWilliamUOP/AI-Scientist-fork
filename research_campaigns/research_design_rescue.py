@@ -97,10 +97,10 @@ def triage(
         status = Disposition.PASS
     elif all_repaired:
         status = Disposition.REPAIR
-    elif identification_possible is False and claim.theoretical_value_confirmed is True and simulation_feasible is True:
-        status = Disposition.CONCEPTUAL_SIM
     elif available:
         status = Disposition.REPAIR
+    elif identification_possible is False and claim.theoretical_value_confirmed is True and simulation_feasible is True:
+        status = Disposition.CONCEPTUAL_SIM
     elif impossibility_proven:
         status = Disposition.UNRESOLVABLE
     elif any(e["preserves_original_claim"] is False and e["feasible_under_constraints"] is True for e in evaluations):
