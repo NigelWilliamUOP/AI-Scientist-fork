@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1",
+  "status": "local_blueprints_not_native_antigravity_patterns",
+  "patterns": {
+    "document_review": {
+      "allowed_phases": ["review", "design", "simulation", "tracking"],
+      "roles": ["source_reader", "methods_critic", "claim_auditor", "synthesiser"],
+      "required_checks": ["versioned_sources", "claim_to_extract_mapping", "unresolved_objections_retained", "ai_appraisals_provisional"]
+    },
+    "theory_tournament": {
+      "allowed_phases": ["design"],
+      "roles": ["isolated_proposers", "candidate_bound_falsifiers", "synthesiser", "fresh_critic"],
+      "required_checks": ["frozen_question_and_baseline", "source_bound_disconfirmation", "contract_comparison", "objection_inheritance", "abstention_allowed"]
+    },
+    "design_rescue": {
+      "allowed_phases": ["design"],
+      "roles": ["identification_critic", "measurement_critic", "rescue_designer", "claim_change_auditor"],
+      "required_checks": ["original_failures_retained", "feasibility_evidence", "separate_reframe_contract", "semantic_preservation_external_review"]
+    },
+    "simulation_verification": {
+      "allowed_phases": ["simulation"],
+      "roles": ["model_builder", "independent_implementation_checker", "rival_model_critic", "external_validity_auditor"],
+      "required_checks": ["review_to_design_authorisation", "implementation_correctness", "parameter_provenance", "rival_discrimination", "empirical_validation_separate"]
+    },
+    "programme_tracking": {
+      "allowed_phases": ["tracking"],
+      "roles": ["source_monitor", "forecast_scorer", "theory_challenger", "change_auditor"],
+      "required_checks": ["frozen_forecasts", "source_versions", "dependency_invalidation", "retain_failed_predictions"]
+    }
+  }
+}
